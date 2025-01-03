@@ -1,25 +1,25 @@
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'package:flutter/material.dart';
-import 'instagram_model.dart';
-export 'instagram_model.dart';
+import 'twitter_model.dart';
+export 'twitter_model.dart';
 
-class InstagramWidget extends StatefulWidget {
-  const InstagramWidget({super.key});
+class TwitterWidget extends StatefulWidget {
+  const TwitterWidget({super.key});
 
   @override
-  State<InstagramWidget> createState() => _InstagramWidgetState();
+  State<TwitterWidget> createState() => _TwitterWidgetState();
 }
 
-class _InstagramWidgetState extends State<InstagramWidget> {
-  late InstagramModel _model;
+class _TwitterWidgetState extends State<TwitterWidget> {
+  late TwitterModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => InstagramModel());
+    _model = createModel(context, () => TwitterModel());
   }
 
   @override

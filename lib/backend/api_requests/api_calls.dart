@@ -127,6 +127,57 @@ class SearchListAPICallCall {
   }
 }
 
+class ChannelsListAPICallCall {
+  static Future<ApiCallResponse> call({
+    String? channelId = '',
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'channelsListAPICall',
+      apiUrl: 'https://www.googleapis.com/youtube/v3/channels',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {
+        'part': "snippet,contentDetails",
+        'id': channelId,
+        'key': "AIzaSyAvGvIupXr-xr1fycm0o3el4PeqeN98OEE",
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
+class PlaylistItemsListAPICallCall {
+  static Future<ApiCallResponse> call({
+    String? uploadsPlaylistId = '',
+    String? token = '',
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'playlistItemsListAPICall',
+      apiUrl: 'https://www.googleapis.com/youtube/v3/playlistItems',
+      callType: ApiCallType.GET,
+      headers: {},
+      params: {
+        'part': "snippet",
+        'playlistId': uploadsPlaylistId,
+        'maxResults': 50,
+        'pageToken': token,
+        'key': "AIzaSyAvGvIupXr-xr1fycm0o3el4PeqeN98OEE",
+      },
+      returnBody: true,
+      encodeBodyUtf8: false,
+      decodeUtf8: false,
+      cache: false,
+      isStreamingApi: false,
+      alwaysAllowBody: false,
+    );
+  }
+}
+
 class ApiPagingParams {
   int nextPageNumber = 0;
   int numItems = 0;

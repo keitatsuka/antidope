@@ -1,8 +1,8 @@
 import '/flutter_flow/flutter_flow_util.dart';
-import 'instagram_widget.dart' show InstagramWidget;
+import 'twitter_widget.dart' show TwitterWidget;
 import 'package:flutter/material.dart';
 
-class InstagramModel extends FlutterFlowModel<InstagramWidget> {
+class TwitterModel extends FlutterFlowModel<TwitterWidget> {
   @override
   void initState(BuildContext context) {}
 

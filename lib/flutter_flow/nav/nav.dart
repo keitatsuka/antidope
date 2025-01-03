@@ -61,11 +61,11 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               : const NavBarPage(),
         ),
         FFRoute(
-          name: 'HomePage',
-          path: '/homePage',
+          name: 'registration',
+          path: '/registration',
           builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'HomePage')
-              : const HomePageWidget(),
+              ? const NavBarPage(initialPage: 'registration')
+              : const RegistrationWidget(),
         ),
         FFRoute(
           name: 'Youtube',
@@ -75,13 +75,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               : const YoutubeWidget(),
         ),
         FFRoute(
-          name: 'Instagram',
-          path: '/instagram',
-          builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'Instagram')
-              : const InstagramWidget(),
-        ),
-        FFRoute(
           name: 'twitter',
           path: '/twitter',
           builder: (context, params) => params.isEmpty
@@ -89,9 +82,32 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               : const TwitterWidget(),
         ),
         FFRoute(
-          name: 'RegistrationPage',
-          path: '/registrationPage',
-          builder: (context, params) => const RegistrationPageWidget(),
+          name: 'layoutYoutube',
+          path: '/layoutYoutube',
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'layoutYoutube')
+              : const LayoutYoutubeWidget(),
+        ),
+        FFRoute(
+          name: 'layoutHome',
+          path: '/layoutHome',
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'layoutHome')
+              : const LayoutHomeWidget(),
+        ),
+        FFRoute(
+          name: 'layoutSetting',
+          path: '/layoutSetting',
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'layoutSetting')
+              : const LayoutSettingWidget(),
+        ),
+        FFRoute(
+          name: 'layoutX',
+          path: '/layoutX',
+          builder: (context, params) => params.isEmpty
+              ? const NavBarPage(initialPage: 'layoutX')
+              : const LayoutXWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );

@@ -81,6 +81,70 @@ class FFAppState extends ChangeNotifier {
     _ChannelId = value;
   }
 
+  List<dynamic> _channelsList = [];
+  List<dynamic> get channelsList => _channelsList;
+  set channelsList(List<dynamic> value) {
+    _channelsList = value;
+  }
+
+  void addToChannelsList(dynamic value) {
+    channelsList.add(value);
+  }
+
+  void removeFromChannelsList(dynamic value) {
+    channelsList.remove(value);
+  }
+
+  void removeAtIndexFromChannelsList(int index) {
+    channelsList.removeAt(index);
+  }
+
+  void updateChannelsListAtIndex(
+    int index,
+    dynamic Function(dynamic) updateFn,
+  ) {
+    channelsList[index] = updateFn(_channelsList[index]);
+  }
+
+  void insertAtIndexInChannelsList(int index, dynamic value) {
+    channelsList.insert(index, value);
+  }
+
+  String _lastUsedChannelId = '';
+  String get lastUsedChannelId => _lastUsedChannelId;
+  set lastUsedChannelId(String value) {
+    _lastUsedChannelId = value;
+  }
+
+  List<dynamic> _bookmark = [];
+  List<dynamic> get bookmark => _bookmark;
+  set bookmark(List<dynamic> value) {
+    _bookmark = value;
+  }
+
+  void addToBookmark(dynamic value) {
+    bookmark.add(value);
+  }
+
+  void removeFromBookmark(dynamic value) {
+    bookmark.remove(value);
+  }
+
+  void removeAtIndexFromBookmark(int index) {
+    bookmark.removeAt(index);
+  }
+
+  void updateBookmarkAtIndex(
+    int index,
+    dynamic Function(dynamic) updateFn,
+  ) {
+    bookmark[index] = updateFn(_bookmark[index]);
+  }
+
+  void insertAtIndexInBookmark(int index, dynamic value) {
+    bookmark.insert(index, value);
+  }
+
   final _youtubequeryManager = FutureRequestManager<ApiCallResponse>();
   Future<ApiCallResponse> youtubequery({
     String? uniqueQueryKey,

@@ -12,25 +12,14 @@ import '/flutter_flow/custom_functions.dart'; // Import custom functions
 
 import 'package:hive/hive.dart';
 
-Future<String?> storeVideoListJsonSafely(
-  String? responseBody,
-  String? channelId,
-) async {
-  if (responseBody == null || channelId == null) return null;
+Future<String?> updateChannelTimestamp(String channelId) async {
+  final box = Hive.box('channelsBox');
+  final timestampsJson = box.get('channelTimestamps', defaultValue: '{}');
 
-  String rawJsonString;
-  if (responseBody is String) {
-    rawJsonString = responseBody;
-  } else {
-    rawJsonString = jsonEncode(responseBody);
-  }
+  final Map<String, dynamic> timestampsMap = jsonDecode(timestampsJson);
+  timestampsMap[channelId] = DateTime.now().millisecondsSinceEpoch;
 
-  if (rawJsonString.isNotEmpty) {
-    // チャンネルIDをKeyに組み込んでHiveに保存
-    var box = Hive.box('cacheBox');
-    await box.put('videoList_${channelId}', rawJsonString);
-    return rawJsonString;
-  }
+  await box.put('channelTimestamps', jsonEncode(timestampsMap));
   return null;
 }
 

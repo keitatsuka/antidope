@@ -1,28 +1,38 @@
 import '/backend/api_requests/api_calls.dart';
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
 import '/custom_code/actions/index.dart' as actions;
 import 'package:flutter/material.dart';
-import 'home_page_model.dart';
-export 'home_page_model.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:provider/provider.dart';
+import 'registration_model.dart';
+export 'registration_model.dart';
 
-class HomePageWidget extends StatefulWidget {
-  const HomePageWidget({super.key});
+class RegistrationWidget extends StatefulWidget {
+  const RegistrationWidget({super.key});
 
   @override
-  State<HomePageWidget> createState() => _HomePageWidgetState();
+  State<RegistrationWidget> createState() => _RegistrationWidgetState();
 }
 
-class _HomePageWidgetState extends State<HomePageWidget> {
-  late HomePageModel _model;
+class _RegistrationWidgetState extends State<RegistrationWidget> {
+  late RegistrationModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => HomePageModel());
+    _model = createModel(context, () => RegistrationModel());
+
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _model.channelsData = await actions.fetchChannelsListFromHiveAsJson();
+      FFAppState().channelsList = _model.channelsData!.toList().cast<dynamic>();
+      safeSetState(() {});
+    });
 
     _model.textController ??= TextEditingController();
     _model.textFieldFocusNode ??= FocusNode();
@@ -37,6 +47,8 @@ class _HomePageWidgetState extends State<HomePageWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -156,35 +168,64 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                           );
 
                           if ((_model.videoRes?.succeeded ?? true)) {
-                            FFAppState().ChannelId = getJsonField(
-                              (_model.videoRes?.jsonBody ?? ''),
-                              r'''$.items[0].snippet.channelId''',
-                            ).toString();
-                            safeSetState(() {});
-                            await actions.clearVideoListJson();
+                            _model.apiResultfir =
+                                await ChannelsListAPICallCall.call(
+                              channelId: getJsonField(
+                                (_model.videoRes?.jsonBody ?? ''),
+                                r'''$.items[0].snippet.channelId''',
+                              ).toString(),
+                            );
+
+                            if ((_model.apiResultfir?.succeeded ?? true)) {
+                              await actions.saveYoutubeChannelToHive(
+                                FFAppState().ChannelId,
+                                getJsonField(
+                                  (_model.apiResultfir?.jsonBody ?? ''),
+                                  r'''$.items[0].snippet.title''',
+                                ).toString(),
+                                getJsonField(
+                                  (_model.apiResultfir?.jsonBody ?? ''),
+                                  r'''$.items[0].snippet.thumbnails.default.url''',
+                                ).toString(),
+                              );
+                              _model.fechChannelsListVideo = await actions
+                                  .fetchChannelsListFromHiveAsJson();
+                              FFAppState().channelsList = _model
+                                  .fechChannelsListVideo!
+                                  .toList()
+                                  .cast<dynamic>();
+                              safeSetState(() {});
+                              await actions.clearVideoListJson();
+                            }
                           }
                         } else {
                           if (_model.channelIdValue != null &&
                               _model.channelIdValue != '') {
-                            FFAppState().ChannelId = _model.channelIdValue!;
-                            safeSetState(() {});
-                            await actions.clearVideoListJson();
-                          } else {
-                            if (_model.customNameValue != null &&
-                                _model.customNameValue != '') {
-                              _model.searchRes =
-                                  await SearchListAPICallCall.call(
-                                queryParam: _model.customNameValue,
-                              );
+                            _model.channelRes =
+                                await ChannelsListAPICallCall.call(
+                              channelId: _model.channelIdValue,
+                            );
 
-                              if ((_model.searchRes?.succeeded ?? true)) {
-                                FFAppState().ChannelId = getJsonField(
-                                  (_model.searchRes?.jsonBody ?? ''),
-                                  r'''$.items[0].id.channelId''',
-                                ).toString();
-                                safeSetState(() {});
-                                await actions.clearVideoListJson();
-                              }
+                            if ((_model.apiResultfir?.succeeded ?? true)) {
+                              await actions.saveYoutubeChannelToHive(
+                                FFAppState().ChannelId,
+                                getJsonField(
+                                  (_model.channelRes?.jsonBody ?? ''),
+                                  r'''$.items[0].snippet.title''',
+                                ).toString(),
+                                getJsonField(
+                                  (_model.channelRes?.jsonBody ?? ''),
+                                  r'''$.items[0].snippet.thumbnails.default.url''',
+                                ).toString(),
+                              );
+                              _model.channelsDataTap = await actions
+                                  .fetchChannelsListFromHiveAsJson();
+                              FFAppState().channelsList = _model
+                                  .channelsDataTap!
+                                  .toList()
+                                  .cast<dynamic>();
+                              safeSetState(() {});
+                              await actions.clearVideoListJson();
                             }
                           }
                         }
@@ -201,7 +242,7 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                         color: FlutterFlowTheme.of(context).primary,
                         textStyle:
                             FlutterFlowTheme.of(context).titleSmall.override(
-                                  fontFamily: 'Inter Tight',
+                                  fontFamily: 'Inter',
                                   color: Colors.white,
                                   letterSpacing: 0.0,
                                 ),
@@ -211,6 +252,70 @@ class _HomePageWidgetState extends State<HomePageWidget> {
                     ),
                   ],
                 ),
+              ),
+              Builder(
+                builder: (context) {
+                  final channlLIst =
+                      FFAppState().channelsList.toList().take(5).toList();
+
+                  return ListView.builder(
+                    padding: EdgeInsets.zero,
+                    shrinkWrap: true,
+                    scrollDirection: Axis.vertical,
+                    itemCount: channlLIst.length,
+                    itemBuilder: (context, channlLIstIndex) {
+                      final channlLIstItem = channlLIst[channlLIstIndex];
+                      return Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.network(
+                              getJsonField(
+                                channlLIstItem,
+                                r'''$.iconUrl''',
+                              ).toString(),
+                              width: 60.0,
+                              height: 60.0,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Text(
+                            getJsonField(
+                              channlLIstItem,
+                              r'''$.channelName''',
+                            ).toString(),
+                            style: FlutterFlowTheme.of(context)
+                                .bodyMedium
+                                .override(
+                                  fontFamily: 'Inter',
+                                  letterSpacing: 0.0,
+                                ),
+                          ),
+                          FlutterFlowIconButton(
+                            borderRadius: 8.0,
+                            buttonSize: 40.0,
+                            fillColor: FlutterFlowTheme.of(context).primary,
+                            icon: Icon(
+                              Icons.delete,
+                              color: FlutterFlowTheme.of(context).info,
+                              size: 24.0,
+                            ),
+                            onPressed: () async {
+                              await actions.deleteChannelFromHive(
+                                channlLIstIndex,
+                              );
+                              FFAppState().removeAtIndexFromChannelsList(
+                                  channlLIstIndex);
+                              safeSetState(() {});
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                },
               ),
             ],
           ),

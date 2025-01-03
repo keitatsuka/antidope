@@ -99,7 +99,7 @@ class NavBarPage extends StatefulWidget {
 
 /// This is the private State class that goes with NavBarPage.
 class _NavBarPageState extends State<NavBarPage> {
-  String _currentPageName = 'HomePage';
+  String _currentPageName = 'registration';
   late Widget? _currentPage;
 
   @override
@@ -112,10 +112,13 @@ class _NavBarPageState extends State<NavBarPage> {
   @override
   Widget build(BuildContext context) {
     final tabs = {
-      'HomePage': const HomePageWidget(),
+      'registration': const RegistrationWidget(),
       'Youtube': const YoutubeWidget(),
       'twitter': const TwitterWidget(),
-      'Instagram': const InstagramWidget(),
+      'layoutYoutube': const LayoutYoutubeWidget(),
+      'layoutHome': const LayoutHomeWidget(),
+      'layoutSetting': const LayoutSettingWidget(),
+      'layoutX': const LayoutXWidget(),
     };
     final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
 
@@ -152,7 +155,7 @@ class _NavBarPageState extends State<NavBarPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.chat,
+              Icons.clear,
               size: 24.0,
             ),
             label: 'Home',
@@ -160,7 +163,31 @@ class _NavBarPageState extends State<NavBarPage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(
-              Icons.image_sharp,
+              Icons.play_circle,
+              size: 24.0,
+            ),
+            label: 'Home',
+            tooltip: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.home_outlined,
+              size: 24.0,
+            ),
+            label: 'Home',
+            tooltip: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.settings_sharp,
+              size: 24.0,
+            ),
+            label: 'Home',
+            tooltip: '',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(
+              Icons.play_circle,
               size: 24.0,
             ),
             label: 'Home',

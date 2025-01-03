@@ -7,13 +7,16 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
+import '/custom_code/actions/index.dart'; // Import other custom actions
+import '/flutter_flow/custom_functions.dart'; // Import custom functions
+
 import 'package:hive/hive.dart';
 
-Future<String?> getSlotsFromHive() async {
-  var box = Hive.box('channelsBox');
-  var raw = box.get('youtubeSlots', defaultValue: []);
-  // rawがList<Map>等だとしてjsonEncodeで返す
-  return jsonEncode(raw);
+Future<String?> cacheVideoListForChannel(
+    String channelId, String responseBody) async {
+  final box = Hive.box('channelsBox');
+  await box.put('videoList_$channelId', responseBody);
+  return null;
 }
 
 // Set your action name, define your arguments and return parameter,

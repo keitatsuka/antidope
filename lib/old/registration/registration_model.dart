@@ -1,11 +1,13 @@
 import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import 'home_page_widget.dart' show HomePageWidget;
+import 'registration_widget.dart' show RegistrationWidget;
 import 'package:flutter/material.dart';
 
-class HomePageModel extends FlutterFlowModel<HomePageWidget> {
+class RegistrationModel extends FlutterFlowModel<RegistrationWidget> {
   ///  State fields for stateful widgets in this page.
 
+  // Stores action output result for [Custom Action - fetchChannelsListFromHiveAsJson] action in registration widget.
+  dynamic channelsData;
   // State field(s) for TextField widget.
   FocusNode? textFieldFocusNode;
   TextEditingController? textController;
@@ -20,8 +22,14 @@ class HomePageModel extends FlutterFlowModel<HomePageWidget> {
   String? customNameValue;
   // Stores action output result for [Backend Call - API (VideosListAPICall)] action in Button widget.
   ApiCallResponse? videoRes;
-  // Stores action output result for [Backend Call - API (SearchListAPICall)] action in Button widget.
-  ApiCallResponse? searchRes;
+  // Stores action output result for [Backend Call - API (channelsListAPICall)] action in Button widget.
+  ApiCallResponse? apiResultfir;
+  // Stores action output result for [Custom Action - fetchChannelsListFromHiveAsJson] action in Button widget.
+  dynamic fechChannelsListVideo;
+  // Stores action output result for [Backend Call - API (channelsListAPICall)] action in Button widget.
+  ApiCallResponse? channelRes;
+  // Stores action output result for [Custom Action - fetchChannelsListFromHiveAsJson] action in Button widget.
+  dynamic channelsDataTap;
 
   @override
   void initState(BuildContext context) {}

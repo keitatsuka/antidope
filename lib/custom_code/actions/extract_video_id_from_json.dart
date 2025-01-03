@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
+import 'dart:convert';
+
 String? extractVideoIdFromJson(String? jsonString) {
   /// MODIFY CODE ONLY BELOW THIS LINE
 
@@ -14,13 +16,12 @@ String? extractVideoIdFromJson(String? jsonString) {
     return null; // 引数がnullなら何もしない
   }
 
-  // JSON文字列をMap形式にパース
+  // JSON文字列をMapにデコード
   final data = jsonDecode(jsonString);
 
-  // dataはMap型。itemsはList
-  // itemsが存在し、0番目の要素があることを確認
+  // 'items' が存在し、最低1件あるか
   if (data['items'] == null || data['items'].isEmpty) {
-    return null; // itemsがない場合null
+    return null;
   }
 
   final firstItem = data['items'][0];
@@ -28,14 +29,25 @@ String? extractVideoIdFromJson(String? jsonString) {
     return null;
   }
 
-  // firstItem['id']['videoId']が存在する場合それを返す
+  // パターン1: snippet.resourceId.videoId が入っている
+  if (firstItem['snippet'] != null &&
+      firstItem['snippet']['resourceId'] != null &&
+      firstItem['snippet']['resourceId']['videoId'] != null) {
+    return firstItem['snippet']['resourceId']['videoId'].toString();
+  }
+
+  // パターン2: id.videoId が入っている
   if (firstItem['id'] != null && firstItem['id']['videoId'] != null) {
     return firstItem['id']['videoId'] as String;
   }
 
+  // どちらも無ければ null
   return null;
 
   /// MODIFY CODE ONLY ABOVE THIS LINE
 }
+
+/// MODIFY CODE ONLY ABOVE THIS LINE
+
 // Set your action name, define your arguments and return parameter,
 // and then add the boilerplate code using the green button on the right!

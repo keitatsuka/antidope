@@ -30,12 +30,17 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
+      // test
       _model.cachedTimestamp = actions.getTimestampString();
       await actions.debugOnPageLoadStart();
       _model.currentTimestamp = actions.getCurrentTimestampString();
+      if (FFAppState().lastUsedChannelId != '') {
+        FFAppState().ChannelId = FFAppState().lastUsedChannelId;
+        safeSetState(() {});
+      }
       _model.cacheValidResult = actions.isCacheValid(
         _model.cachedTimestamp,
-        '86400000',
+        ' 86400000',
       );
       if (_model.cacheValidResult == 'true') {
         _model.cachedJson = actions.getVideoListJson();
@@ -65,13 +70,21 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
           '',
         );
       } else {
-        _model.apiResultsvm = await YoutubeDataAPICall.call(
-          channelIdParam: FFAppState().ChannelId,
+        _model.uploadsPlaylistId = await ChannelsListAPICallCall.call(
+          channelId: FFAppState().ChannelId,
         );
 
-        if ((_model.apiResultsvm?.succeeded ?? true)) {
+        _model.playlistItemsResponse = await PlaylistItemsListAPICallCall.call(
+          uploadsPlaylistId: getJsonField(
+            (_model.uploadsPlaylistId?.jsonBody ?? ''),
+            r'''$.items[0].contentDetails.relatedPlaylists.uploads''',
+          ).toString().toString(),
+        );
+
+        if ((_model.uploadsPlaylistId?.succeeded ?? true)) {
           _model.videoListJsonSafely = await actions.storeVideoListJsonSafely(
-            (_model.apiResultsvm?.jsonBody ?? ''),
+            (_model.playlistItemsResponse?.jsonBody ?? '').toString(),
+            FFAppState().ChannelId,
           );
           await actions.debugAfterSaveVideoListJson(
             _model.videoListJsonSafely,
@@ -182,7 +195,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                             textStyle: FlutterFlowTheme.of(context)
                                 .titleSmall
                                 .override(
-                                  fontFamily: 'Inter Tight',
+                                  fontFamily: 'Inter',
                                   color: Colors.white,
                                   letterSpacing: 0.0,
                                 ),
@@ -205,9 +218,158 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                         ),
                       ],
                     ),
-                    const Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [],
+                    SizedBox(
+                      height: 63.0,
+                      child: Builder(
+                        builder: (context) {
+                          final channelsIcon =
+                              FFAppState().channelsList.toList();
+
+                          return ListView.builder(
+                            padding: EdgeInsets.zero,
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: channelsIcon.length,
+                            itemBuilder: (context, channelsIconIndex) {
+                              final channelsIconItem =
+                                  channelsIcon[channelsIconIndex];
+                              return InkWell(
+                                splashColor: Colors.transparent,
+                                focusColor: Colors.transparent,
+                                hoverColor: Colors.transparent,
+                                highlightColor: Colors.transparent,
+                                onTap: () async {
+                                  FFAppState().ChannelId = getJsonField(
+                                    channelsIconItem,
+                                    r'''$.channelId''',
+                                  ).toString();
+                                  safeSetState(() {});
+                                  FFAppState().lastUsedChannelId =
+                                      FFAppState().ChannelId;
+                                  safeSetState(() {});
+                                  _model.cacheValid =
+                                      await actions.isChannelCacheValid(
+                                    FFAppState().ChannelId,
+                                    '864',
+                                  );
+                                  if (_model.cacheValid == true) {
+                                    _model.cachedVideoListForChannel =
+                                        await actions
+                                            .getCachedVideoListForChannel(
+                                      FFAppState().ChannelId,
+                                    );
+                                    _model.itemsListCachedVideoList =
+                                        await actions.extractItemsListFromJson(
+                                      _model.cachedVideoListForChannel,
+                                    );
+                                    FFAppState().videoListJson =
+                                        _model.cachedVideoListForChannel!;
+                                    safeSetState(() {});
+                                    FFAppState().test = _model
+                                        .itemsListCachedVideoList!
+                                        .toList()
+                                        .cast<dynamic>();
+                                    safeSetState(() {});
+                                    if (FFAppState().test.isNotEmpty) {
+                                      FFAppState().selectedItem =
+                                          FFAppState().test.firstOrNull!;
+                                      safeSetState(() {});
+                                      _model.extractedVideoIdIcon =
+                                          actions.extractVideoIdFromJson(
+                                        _model.cachedVideoListForChannel,
+                                      );
+                                      FFAppState().selectedVideoId =
+                                          _model.extractedVideoIdIcon!;
+                                      safeSetState(() {});
+                                      FFAppState().HTMLForWebView =
+                                          '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
+                                      safeSetState(() {});
+                                    }
+                                  } else {
+                                    _model.channelApiResult =
+                                        await ChannelsListAPICallCall.call(
+                                      channelId: FFAppState().ChannelId,
+                                    );
+
+                                    if ((_model.channelApiResult?.succeeded ??
+                                        true)) {
+                                      _model.itemsApiResult =
+                                          await PlaylistItemsListAPICallCall
+                                              .call(
+                                        uploadsPlaylistId: getJsonField(
+                                          (_model.channelApiResult?.jsonBody ??
+                                              ''),
+                                          r'''$.items[0].contentDetails.relatedPlaylists.uploads''',
+                                        ).toString(),
+                                      );
+
+                                      if ((_model.itemsApiResult?.succeeded ??
+                                          true)) {
+                                        _model.videoListJsonSafelyIcon =
+                                            await actions
+                                                .storeVideoListJsonSafely(
+                                          (_model.itemsApiResult?.jsonBody ??
+                                                  '')
+                                              .toString(),
+                                          FFAppState().ChannelId,
+                                        );
+                                        await actions.updateChannelTimestamp(
+                                          FFAppState().ChannelId,
+                                        );
+                                        FFAppState().videoListJson =
+                                            _model.videoListJsonSafelyIcon!;
+                                        safeSetState(() {});
+                                        _model.itemsListicon = await actions
+                                            .extractItemsListFromJson(
+                                          FFAppState().videoListJson,
+                                        );
+                                        FFAppState().test = _model
+                                            .itemsListicon!
+                                            .toList()
+                                            .cast<dynamic>();
+                                        safeSetState(() {});
+                                        _model.newVideoIdIcon = actions
+                                            .extractVideoIdFromJson(
+                                          FFAppState().videoListJson,
+                                        );
+                                        if (FFAppState().test.isNotEmpty) {
+                                          FFAppState().selectedVideoId =
+                                              getJsonField(
+                                            FFAppState().test.firstOrNull,
+                                            r'''$.id.videoId''',
+                                          ).toString();
+                                          safeSetState(() {});
+                                          FFAppState().selectedItem =
+                                              FFAppState().test.firstOrNull!;
+                                          safeSetState(() {});
+                                          FFAppState().HTMLForWebView =
+                                              '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
+                                          safeSetState(() {});
+                                        }
+                                      }
+                                    }
+                                  }
+
+                                  safeSetState(() {});
+                                },
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(24.0),
+                                  child: Image.network(
+                                    getJsonField(
+                                      channelsIconItem,
+                                      r'''$.iconUrl''',
+                                    ).toString(),
+                                    width: 50.0,
+                                    height: 50.0,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                              );
+                            },
+                            controller: _model.listViewController1,
+                          );
+                        },
+                      ),
                     ),
                     Column(
                       mainAxisSize: MainAxisSize.max,
@@ -520,7 +682,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                               ),
                             );
                           },
-                          controller: _model.listViewController,
+                          controller: _model.listViewController2,
                         );
                       },
                     ),

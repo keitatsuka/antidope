@@ -12,26 +12,22 @@ import '/flutter_flow/custom_functions.dart'; // Import custom functions
 
 import 'package:hive/hive.dart';
 
-Future<String?> storeVideoListJsonSafely(
-  String? responseBody,
-  String? channelId,
-) async {
-  if (responseBody == null || channelId == null) return null;
+Future<bool> isChannelCacheValid(
+    String channelId, String expiryMsString) async {
+  final box = Hive.box('channelsBox');
+  final timestampsJson = box.get('channelTimestamps', defaultValue: '{}');
+  final Map<String, dynamic> timestampsMap = jsonDecode(timestampsJson);
 
-  String rawJsonString;
-  if (responseBody is String) {
-    rawJsonString = responseBody;
-  } else {
-    rawJsonString = jsonEncode(responseBody);
+  final lastFetch = timestampsMap[channelId];
+  if (lastFetch == null) {
+    return false;
   }
 
-  if (rawJsonString.isNotEmpty) {
-    // チャンネルIDをKeyに組み込んでHiveに保存
-    var box = Hive.box('cacheBox');
-    await box.put('videoList_${channelId}', rawJsonString);
-    return rawJsonString;
-  }
-  return null;
+  final expiryMs = int.tryParse(expiryMsString) ?? 86400000;
+  final now = DateTime.now().millisecondsSinceEpoch;
+  final elapsed = now - (lastFetch as int);
+
+  return elapsed < expiryMs;
 }
 
 // Set your action name, define your arguments and return parameter,
