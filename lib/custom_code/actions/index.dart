@@ -28,3 +28,5 @@ export 'cache_video_list_for_channel.dart' show cacheVideoListForChannel;
 export 'update_channel_timestamp.dart' show updateChannelTimestamp;
 export 'get_cached_video_list_for_channel.dart'
     show getCachedVideoListForChannel;
+export 'debug_print_json.dart' show debugPrintJson;
+export 'find_icon_url_by_channel_id.dart' show findIconUrlByChannelId;

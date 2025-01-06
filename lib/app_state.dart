@@ -116,33 +116,10 @@ class FFAppState extends ChangeNotifier {
     _lastUsedChannelId = value;
   }
 
-  List<dynamic> _bookmark = [];
-  List<dynamic> get bookmark => _bookmark;
-  set bookmark(List<dynamic> value) {
-    _bookmark = value;
-  }
-
-  void addToBookmark(dynamic value) {
-    bookmark.add(value);
-  }
-
-  void removeFromBookmark(dynamic value) {
-    bookmark.remove(value);
-  }
-
-  void removeAtIndexFromBookmark(int index) {
-    bookmark.removeAt(index);
-  }
-
-  void updateBookmarkAtIndex(
-    int index,
-    dynamic Function(dynamic) updateFn,
-  ) {
-    bookmark[index] = updateFn(_bookmark[index]);
-  }
-
-  void insertAtIndexInBookmark(int index, dynamic value) {
-    bookmark.insert(index, value);
+  dynamic _selectedIconUrl;
+  dynamic get selectedIconUrl => _selectedIconUrl;
+  set selectedIconUrl(dynamic value) {
+    _selectedIconUrl = value;
   }
 
   final _youtubequeryManager = FutureRequestManager<ApiCallResponse>();

@@ -84,9 +84,7 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
         FFRoute(
           name: 'layoutYoutube',
           path: '/layoutYoutube',
-          builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'layoutYoutube')
-              : const LayoutYoutubeWidget(),
+          builder: (context, params) => const LayoutYoutubeWidget(),
         ),
         FFRoute(
           name: 'layoutHome',

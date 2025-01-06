@@ -13,12 +13,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 // このアクションはアプリ起動時(Initial Actions)で実行することを想定
 Future<String?> initializeHive() async {
-  // Hive初期化処理: FlutterFlowの環境で実行
+  // main.dart
   await Hive.initFlutter();
-
-  // ここで両方のBoxを開く
-  await Hive.openBox('cacheBox');
-  await Hive.openBox('channelsBox'); // ← これが重要
+// ここで 'channelsBox' も open
+  await Hive.openBox('channelsBox');
+  await Hive.openBox('bookmarkBox');
+// 'cacheBox' は使わないなら開かないでOK
+// どうしても別用途で使うなら openBox('cacheBox') は残してよい
 
   return null; // FlutterFlowがString?必須の場合にはnullを返す
 }

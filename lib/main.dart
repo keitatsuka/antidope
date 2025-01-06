@@ -115,7 +115,6 @@ class _NavBarPageState extends State<NavBarPage> {
       'registration': const RegistrationWidget(),
       'Youtube': const YoutubeWidget(),
       'twitter': const TwitterWidget(),
-      'layoutYoutube': const LayoutYoutubeWidget(),
       'layoutHome': const LayoutHomeWidget(),
       'layoutSetting': const LayoutSettingWidget(),
       'layoutX': const LayoutXWidget(),
@@ -156,14 +155,6 @@ class _NavBarPageState extends State<NavBarPage> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.clear,
-              size: 24.0,
-            ),
-            label: 'Home',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.play_circle,
               size: 24.0,
             ),
             label: 'Home',

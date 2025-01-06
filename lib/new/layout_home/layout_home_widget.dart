@@ -660,7 +660,7 @@ class _LayoutHomeWidgetState extends State<LayoutHomeWidget> {
                                                 .headlineSmall
                                                 .override(
                                                   fontFamily: 'Sora',
-                                                  fontSize: 18.0,
+                                                  fontSize: 14.0,
                                                   letterSpacing: 0.0,
                                                   fontWeight: FontWeight.normal,
                                                 ),
@@ -757,7 +757,7 @@ class _LayoutHomeWidgetState extends State<LayoutHomeWidget> {
                                                 .headlineSmall
                                                 .override(
                                                   fontFamily: 'Sora',
-                                                  fontSize: 18.0,
+                                                  fontSize: 14.0,
                                                   letterSpacing: 0.0,
                                                   fontWeight: FontWeight.normal,
                                                 ),

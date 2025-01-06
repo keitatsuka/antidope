@@ -178,7 +178,10 @@ class _RegistrationWidgetState extends State<RegistrationWidget> {
 
                             if ((_model.apiResultfir?.succeeded ?? true)) {
                               await actions.saveYoutubeChannelToHive(
-                                FFAppState().ChannelId,
+                                getJsonField(
+                                  (_model.videoRes?.jsonBody ?? ''),
+                                  r'''$.items[0].snippet.channelId''',
+                                ).toString(),
                                 getJsonField(
                                   (_model.apiResultfir?.jsonBody ?? ''),
                                   r'''$.items[0].snippet.title''',

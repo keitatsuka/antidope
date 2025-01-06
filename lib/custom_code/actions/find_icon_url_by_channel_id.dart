@@ -7,14 +7,23 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-/// MODIFY CODE ONLY BELOW THIS LINE
-import 'package:hive/hive.dart'; // この行をDO NOT REMOVE...の下、かつMODIFY CODE ONLY BELOW THIS LINEより上に書かないように注意
-import 'package:hive_flutter/hive_flutter.dart';
-
-String? getVideoListJson(String channelId) {
-  final box = Hive.box('channelsBox');
-  return box.get('videoList_$channelId', defaultValue: null);
+Future<String?> findIconUrlByChannelId(
+  dynamic channelsList, // Parameter1: Type = JSON
+  String? channelId, // Parameter2: Type = String
+) async {
+  if (channelsList == null || channelId == null) {
+    return null;
+  }
+  if (channelsList is List) {
+    for (final item in channelsList) {
+      if (item is Map &&
+          item['channelId'] == channelId &&
+          item['iconUrl'] != null) {
+        return item['iconUrl'] as String;
+      }
+    }
+  }
+  return null;
 }
-
 // Set your action name, define your arguments and return parameter,
 // and then add the boilerplate code using the green button on the right!

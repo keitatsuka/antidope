@@ -1,10 +1,12 @@
 import '/backend/api_requests/api_calls.dart';
+import '/flutter_flow/flutter_flow_icon_button.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_web_view.dart';
-import '/flutter_flow/flutter_flow_widgets.dart';
 import '/custom_code/actions/index.dart' as actions;
 import '/flutter_flow/custom_functions.dart' as functions;
+import 'package:sticky_headers/sticky_headers.dart';
+import 'package:easy_debounce/easy_debounce.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:provider/provider.dart';
@@ -30,45 +32,20 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
 
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
-      // test
-      _model.cachedTimestamp = actions.getTimestampString();
-      await actions.debugOnPageLoadStart();
-      _model.currentTimestamp = actions.getCurrentTimestampString();
       if (FFAppState().lastUsedChannelId != '') {
         FFAppState().ChannelId = FFAppState().lastUsedChannelId;
         safeSetState(() {});
       }
-      _model.cacheValidResult = actions.isCacheValid(
-        _model.cachedTimestamp,
-        ' 86400000',
+      _model.cacheValidResult = await actions.isChannelCacheValid(
+        FFAppState().ChannelId,
+        '86400000',
       );
-      if (_model.cacheValidResult == 'true') {
-        _model.cachedJson = actions.getVideoListJson();
-        await actions.debugAfterGetVideoListJson(
-          _model.cachedJson,
+      if (_model.cacheValidResult == true) {
+        _model.cachedJson = await actions.getCachedVideoListForChannel(
+          FFAppState().ChannelId,
         );
         FFAppState().videoListJson = _model.cachedJson!;
         safeSetState(() {});
-        _model.videoItemsListCached = await actions.extractItemsListFromJson(
-          FFAppState().videoListJson,
-        );
-        await actions.debugAfterExtract();
-        FFAppState().test =
-            _model.videoItemsListCached!.toList().cast<dynamic>();
-        safeSetState(() {});
-        FFAppState().selectedItem = FFAppState().test.firstOrNull!;
-        safeSetState(() {});
-        _model.extractedVideoId = actions.extractVideoIdFromJson(
-          _model.cachedJson,
-        );
-        FFAppState().selectedVideoId = _model.extractedVideoId!;
-        safeSetState(() {});
-        FFAppState().HTMLForWebView =
-            '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
-        safeSetState(() {});
-        await actions.debugPrintVariables(
-          '',
-        );
       } else {
         _model.uploadsPlaylistId = await ChannelsListAPICallCall.call(
           channelId: FFAppState().ChannelId,
@@ -82,40 +59,34 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
         );
 
         if ((_model.uploadsPlaylistId?.succeeded ?? true)) {
-          _model.videoListJsonSafely = await actions.storeVideoListJsonSafely(
+          _model.storedJson = await actions.storeVideoListJsonSafely(
             (_model.playlistItemsResponse?.jsonBody ?? '').toString(),
             FFAppState().ChannelId,
           );
-          await actions.debugAfterSaveVideoListJson(
-            _model.videoListJsonSafely,
+          await actions.updateChannelTimestamp(
+            FFAppState().ChannelId,
           );
-          actions.saveTimestamp(
-            _model.currentTimestamp,
-          );
-          FFAppState().videoListJson = _model.videoListJsonSafely!;
-          safeSetState(() {});
-          _model.videoItemsListApi = await actions.extractItemsListFromJson(
-            FFAppState().videoListJson,
-          );
-          FFAppState().test =
-              _model.videoItemsListApi!.toList().cast<dynamic>();
-          safeSetState(() {});
-          _model.newVideoId = actions.extractVideoIdFromJson(
-            FFAppState().videoListJson,
-          );
-          FFAppState().selectedVideoId = _model.newVideoId!;
-          safeSetState(() {});
-          await actions.debugPrintVariables(
-            '',
-          );
-          FFAppState().selectedItem = FFAppState().test.firstOrNull!;
-          safeSetState(() {});
-          FFAppState().HTMLForWebView =
-              '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
+          FFAppState().videoListJson = _model.storedJson!;
           safeSetState(() {});
         }
       }
+
+      _model.itemsList = await actions.extractItemsListFromJson(
+        FFAppState().videoListJson,
+      );
+      FFAppState().test = _model.itemsList!.toList().cast<dynamic>();
+      safeSetState(() {});
+      _model.firstVideoId = actions.extractVideoIdFromJson(
+        FFAppState().videoListJson,
+      );
+      FFAppState().selectedVideoId = _model.firstVideoId!;
+      FFAppState().HTMLForWebView =
+          '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%; /* アスペクト比16:9の一例 */       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0;        left: 0;       width: 100%;        height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
+      safeSetState(() {});
     });
+
+    _model.textController ??= TextEditingController();
+    _model.textFieldFocusNode ??= FocusNode();
   }
 
   @override
@@ -137,7 +108,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
         // Customize what your widget looks like when it's loading.
         if (!snapshot.hasData) {
           return Scaffold(
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
             body: Center(
               child: SizedBox(
                 width: 50.0,
@@ -160,7 +131,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
           },
           child: Scaffold(
             key: scaffoldKey,
-            backgroundColor: FlutterFlowTheme.of(context).primaryBackground,
+            backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
             body: SafeArea(
               top: true,
               child: SingleChildScrollView(
@@ -168,523 +139,862 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          width: 251.0,
-                          height: 44.0,
+                    StickyHeader(
+                      overlapHeaders: false,
+                      header: Padding(
+                        padding:
+                            const EdgeInsetsDirectional.fromSTEB(0.0, 0.0, 0.0, 2.0),
+                        child: Container(
                           decoration: BoxDecoration(
                             color: FlutterFlowTheme.of(context)
                                 .secondaryBackground,
-                          ),
-                        ),
-                        FFButtonWidget(
-                          onPressed: () {
-                            print('Button pressed ...');
-                          },
-                          text: '検索',
-                          options: FFButtonOptions(
-                            height: 40.0,
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                16.0, 0.0, 16.0, 0.0),
-                            iconPadding: const EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 0.0),
-                            color: FlutterFlowTheme.of(context).secondaryText,
-                            textStyle: FlutterFlowTheme.of(context)
-                                .titleSmall
-                                .override(
-                                  fontFamily: 'Inter',
-                                  color: Colors.white,
-                                  letterSpacing: 0.0,
+                            boxShadow: const [
+                              BoxShadow(
+                                blurRadius: 4.0,
+                                color: Color(0x33000000),
+                                offset: Offset(
+                                  0.0,
+                                  2.0,
                                 ),
-                            elevation: 0.0,
-                            borderRadius: BorderRadius.circular(8.0),
+                              )
+                            ],
                           ),
-                        ),
-                        Container(
-                          width: 40.0,
-                          height: 40.0,
-                          decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                          ),
-                          child: Icon(
-                            Icons.add,
-                            color: FlutterFlowTheme.of(context).primaryText,
-                            size: 24.0,
-                          ),
-                        ),
-                      ],
-                    ),
-                    SizedBox(
-                      height: 63.0,
-                      child: Builder(
-                        builder: (context) {
-                          final channelsIcon =
-                              FFAppState().channelsList.toList();
-
-                          return ListView.builder(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: channelsIcon.length,
-                            itemBuilder: (context, channelsIconIndex) {
-                              final channelsIconItem =
-                                  channelsIcon[channelsIconIndex];
-                              return InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  FFAppState().ChannelId = getJsonField(
-                                    channelsIconItem,
-                                    r'''$.channelId''',
-                                  ).toString();
-                                  safeSetState(() {});
-                                  FFAppState().lastUsedChannelId =
-                                      FFAppState().ChannelId;
-                                  safeSetState(() {});
-                                  _model.cacheValid =
-                                      await actions.isChannelCacheValid(
-                                    FFAppState().ChannelId,
-                                    '864',
-                                  );
-                                  if (_model.cacheValid == true) {
-                                    _model.cachedVideoListForChannel =
-                                        await actions
-                                            .getCachedVideoListForChannel(
-                                      FFAppState().ChannelId,
-                                    );
-                                    _model.itemsListCachedVideoList =
-                                        await actions.extractItemsListFromJson(
-                                      _model.cachedVideoListForChannel,
-                                    );
-                                    FFAppState().videoListJson =
-                                        _model.cachedVideoListForChannel!;
-                                    safeSetState(() {});
-                                    FFAppState().test = _model
-                                        .itemsListCachedVideoList!
-                                        .toList()
-                                        .cast<dynamic>();
-                                    safeSetState(() {});
-                                    if (FFAppState().test.isNotEmpty) {
-                                      FFAppState().selectedItem =
-                                          FFAppState().test.firstOrNull!;
-                                      safeSetState(() {});
-                                      _model.extractedVideoIdIcon =
-                                          actions.extractVideoIdFromJson(
-                                        _model.cachedVideoListForChannel,
-                                      );
-                                      FFAppState().selectedVideoId =
-                                          _model.extractedVideoIdIcon!;
-                                      safeSetState(() {});
-                                      FFAppState().HTMLForWebView =
-                                          '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
-                                      safeSetState(() {});
-                                    }
-                                  } else {
-                                    _model.channelApiResult =
-                                        await ChannelsListAPICallCall.call(
-                                      channelId: FFAppState().ChannelId,
-                                    );
-
-                                    if ((_model.channelApiResult?.succeeded ??
-                                        true)) {
-                                      _model.itemsApiResult =
-                                          await PlaylistItemsListAPICallCall
-                                              .call(
-                                        uploadsPlaylistId: getJsonField(
-                                          (_model.channelApiResult?.jsonBody ??
-                                              ''),
-                                          r'''$.items[0].contentDetails.relatedPlaylists.uploads''',
-                                        ).toString(),
-                                      );
-
-                                      if ((_model.itemsApiResult?.succeeded ??
-                                          true)) {
-                                        _model.videoListJsonSafelyIcon =
-                                            await actions
-                                                .storeVideoListJsonSafely(
-                                          (_model.itemsApiResult?.jsonBody ??
-                                                  '')
-                                              .toString(),
-                                          FFAppState().ChannelId,
-                                        );
-                                        await actions.updateChannelTimestamp(
-                                          FFAppState().ChannelId,
-                                        );
-                                        FFAppState().videoListJson =
-                                            _model.videoListJsonSafelyIcon!;
-                                        safeSetState(() {});
-                                        _model.itemsListicon = await actions
-                                            .extractItemsListFromJson(
-                                          FFAppState().videoListJson,
-                                        );
-                                        FFAppState().test = _model
-                                            .itemsListicon!
-                                            .toList()
-                                            .cast<dynamic>();
-                                        safeSetState(() {});
-                                        _model.newVideoIdIcon = actions
-                                            .extractVideoIdFromJson(
-                                          FFAppState().videoListJson,
-                                        );
-                                        if (FFAppState().test.isNotEmpty) {
-                                          FFAppState().selectedVideoId =
-                                              getJsonField(
-                                            FFAppState().test.firstOrNull,
-                                            r'''$.id.videoId''',
-                                          ).toString();
-                                          safeSetState(() {});
-                                          FFAppState().selectedItem =
-                                              FFAppState().test.firstOrNull!;
-                                          safeSetState(() {});
-                                          FFAppState().HTMLForWebView =
-                                              '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
-                                          safeSetState(() {});
-                                        }
-                                      }
-                                    }
-                                  }
-
-                                  safeSetState(() {});
-                                },
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(24.0),
-                                  child: Image.network(
-                                    getJsonField(
-                                      channelsIconItem,
-                                      r'''$.iconUrl''',
-                                    ).toString(),
-                                    width: 50.0,
-                                    height: 50.0,
-                                    fit: BoxFit.cover,
-                                  ),
-                                ),
-                              );
-                            },
-                            controller: _model.listViewController1,
-                          );
-                        },
-                      ),
-                    ),
-                    Column(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [
-                        FlutterFlowWebView(
-                          content: FFAppState().HTMLForWebView,
-                          width: MediaQuery.sizeOf(context).width * 1.0,
-                          height: MediaQuery.sizeOf(context).width * 0.65,
-                          verticalScroll: false,
-                          horizontalScroll: false,
-                          html: true,
-                        ),
-                        Container(
-                          width: MediaQuery.sizeOf(context).width * 1.0,
-                          decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                10.0, 10.0, 10.0, 10.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 0.0, 0.0, 10.0),
-                                  child: Text(
-                                    getJsonField(
-                                      FFAppState().selectedItem,
-                                      r'''$.snippet.title''',
-                                    ).toString(),
-                                    textAlign: TextAlign.start,
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          fontFamily: 'Inter',
-                                          fontSize: 16.0,
-                                          letterSpacing: 0.0,
-                                        ),
-                                  ),
-                                ),
-                                Row(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: [
-                                    Align(
-                                      alignment:
-                                          const AlignmentDirectional(-1.0, 0.0),
-                                      child: Padding(
-                                        padding: const EdgeInsetsDirectional.fromSTEB(
-                                            0.0, 0.0, 15.0, 0.0),
-                                        child: Text(
-                                          getJsonField(
-                                            FFAppState().selectedItem,
-                                            r'''$.snippet.channelTitle''',
-                                          ).toString(),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          10.0, 0.0, 0.0, 0.0),
+                                      child: SizedBox(
+                                        width: 180.0,
+                                        child: TextFormField(
+                                          controller: _model.textController,
+                                          focusNode: _model.textFieldFocusNode,
+                                          onChanged: (_) =>
+                                              EasyDebounce.debounce(
+                                            '_model.textController',
+                                            const Duration(milliseconds: 2000),
+                                            () => safeSetState(() {}),
+                                          ),
+                                          autofocus: false,
+                                          obscureText: false,
+                                          decoration: InputDecoration(
+                                            isDense: true,
+                                            labelStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .labelMedium
+                                                    .override(
+                                                      fontFamily: 'Inter',
+                                                      fontSize: 14.0,
+                                                      letterSpacing: 0.0,
+                                                    ),
+                                            hintText:
+                                                '動画URL(全範囲) / キーワード(Channel内)',
+                                            hintStyle:
+                                                FlutterFlowTheme.of(context)
+                                                    .labelMedium
+                                                    .override(
+                                                      fontFamily: 'Inter',
+                                                      fontSize: 12.0,
+                                                      letterSpacing: 0.0,
+                                                    ),
+                                            enabledBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .alternate,
+                                                width: 1.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: const BorderSide(
+                                                color: Color(0x00000000),
+                                                width: 1.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                            errorBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .error,
+                                                width: 1.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                            focusedErrorBorder:
+                                                OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .error,
+                                                width: 1.0,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(8.0),
+                                            ),
+                                            filled: true,
+                                            fillColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .secondaryBackground,
+                                            suffixIcon: _model.textController!
+                                                    .text.isNotEmpty
+                                                ? InkWell(
+                                                    onTap: () async {
+                                                      _model.textController
+                                                          ?.clear();
+                                                      safeSetState(() {});
+                                                    },
+                                                    child: const Icon(
+                                                      Icons.clear,
+                                                      size: 22,
+                                                    ),
+                                                  )
+                                                : null,
+                                          ),
                                           style: FlutterFlowTheme.of(context)
                                               .bodyMedium
                                               .override(
                                                 fontFamily: 'Inter',
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .secondaryText,
                                                 letterSpacing: 0.0,
                                               ),
+                                          cursorColor:
+                                              FlutterFlowTheme.of(context)
+                                                  .primaryText,
+                                          validator: _model
+                                              .textControllerValidator
+                                              .asValidator(context),
                                         ),
                                       ),
                                     ),
-                                    Text(
-                                      valueOrDefault<String>(
-                                        functions.formatIsoToSlashDate(
-                                            valueOrDefault<String>(
-                                          getJsonField(
-                                            FFAppState().selectedItem,
-                                            r'''$.snippet.publishedAt''',
-                                          )?.toString(),
-                                          '0',
-                                        )),
-                                        '0',
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(
+                                        5.0, 0.0, 0.0, 0.0),
+                                    child: FlutterFlowIconButton(
+                                      borderColor: Colors.transparent,
+                                      borderRadius: 8.0,
+                                      buttonSize: 40.0,
+                                      icon: Icon(
+                                        Icons.search_sharp,
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                        size: 26.0,
                                       ),
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
-                                          .override(
-                                            fontFamily: 'Inter',
-                                            color: FlutterFlowTheme.of(context)
-                                                .secondaryText,
-                                            letterSpacing: 0.0,
-                                          ),
+                                      onPressed: () {
+                                        print('IconButton pressed ...');
+                                      },
                                     ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    Builder(
-                      builder: (context) {
-                        final items =
-                            FFAppState().test.toList().take(100).toList();
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(
+                                        5.0, 0.0, 5.0, 0.0),
+                                    child: FlutterFlowIconButton(
+                                      borderColor: Colors.transparent,
+                                      borderRadius: 8.0,
+                                      buttonSize: 40.0,
+                                      icon: Icon(
+                                        Icons.bookmark_border,
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                        size: 26.0,
+                                      ),
+                                      onPressed: () {
+                                        print('IconButton pressed ...');
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                width: MediaQuery.sizeOf(context).width * 1.0,
+                                height: 72.0,
+                                decoration: const BoxDecoration(),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Container(
+                                      child: Builder(
+                                        builder: (context) {
+                                          final channelsIcon = FFAppState()
+                                              .channelsList
+                                              .toList();
 
-                        return ListView.builder(
-                          padding: EdgeInsets.zero,
-                          primary: false,
-                          shrinkWrap: true,
-                          scrollDirection: Axis.vertical,
-                          itemCount: items.length,
-                          itemBuilder: (context, itemsIndex) {
-                            final itemsItem = items[itemsIndex];
-                            return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: InkWell(
-                                splashColor: Colors.transparent,
-                                focusColor: Colors.transparent,
-                                hoverColor: Colors.transparent,
-                                highlightColor: Colors.transparent,
-                                onTap: () async {
-                                  FFAppState().selectedVideoId = getJsonField(
-                                    itemsItem,
-                                    r'''$.id.videoId''',
-                                  ).toString();
-                                  safeSetState(() {});
-                                  FFAppState().selectedItem = itemsItem;
-                                  safeSetState(() {});
-                                  FFAppState().HTMLForWebView =
-                                      '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
-                                  safeSetState(() {});
-                                  await _model.columnController?.animateTo(
-                                    0,
-                                    duration: const Duration(milliseconds: 100),
-                                    curve: Curves.ease,
-                                  );
-                                },
-                                child: SizedBox(
-                                  width: MediaQuery.sizeOf(context).width * 1.0,
-                                  child: Stack(
-                                    alignment: const AlignmentDirectional(0.0, 0.0),
-                                    children: [
-                                      Align(
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Container(
-                                          width:
-                                              MediaQuery.sizeOf(context).width *
-                                                  1.0,
-                                          height: 100.0,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(6.0),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Align(
+                                          return ListView.separated(
+                                            padding: const EdgeInsets.fromLTRB(
+                                              20.0,
+                                              0,
+                                              0,
+                                              0,
+                                            ),
+                                            shrinkWrap: true,
+                                            scrollDirection: Axis.horizontal,
+                                            itemCount: channelsIcon.length,
+                                            separatorBuilder: (_, __) =>
+                                                const SizedBox(width: 10.0),
+                                            itemBuilder:
+                                                (context, channelsIconIndex) {
+                                              final channelsIconItem =
+                                                  channelsIcon[
+                                                      channelsIconIndex];
+                                              return Align(
                                                 alignment: const AlignmentDirectional(
-                                                    -1.0, 0.0),
-                                                child: ClipRRect(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          10.0),
-                                                  child: Image.network(
-                                                    getJsonField(
-                                                      itemsItem,
-                                                      r'''$.snippet.thumbnails.default.url''',
-                                                    ).toString(),
-                                                    height: 100.0,
-                                                    fit: BoxFit.cover,
-                                                    errorBuilder: (context,
-                                                            error,
-                                                            stackTrace) =>
-                                                        Image.asset(
-                                                      'assets/images/error_image.png',
-                                                      height: 100.0,
-                                                      fit: BoxFit.cover,
+                                                    0.0, 0.0),
+                                                child: Padding(
+                                                  padding: const EdgeInsetsDirectional
+                                                      .fromSTEB(
+                                                          0.0, 8.0, 0.0, 0.0),
+                                                  child: InkWell(
+                                                    splashColor:
+                                                        Colors.transparent,
+                                                    focusColor:
+                                                        Colors.transparent,
+                                                    hoverColor:
+                                                        Colors.transparent,
+                                                    highlightColor:
+                                                        Colors.transparent,
+                                                    onTap: () async {
+                                                      FFAppState().ChannelId =
+                                                          getJsonField(
+                                                        channelsIconItem,
+                                                        r'''$.channelId''',
+                                                      ).toString();
+                                                      safeSetState(() {});
+                                                      FFAppState()
+                                                              .lastUsedChannelId =
+                                                          FFAppState()
+                                                              .ChannelId;
+                                                      safeSetState(() {});
+                                                      _model.cacheValid =
+                                                          await actions
+                                                              .isChannelCacheValid(
+                                                        FFAppState().ChannelId,
+                                                        '86400000',
+                                                      );
+                                                      if (_model.cacheValid ==
+                                                          true) {
+                                                        _model.cachedVideoListForChannel =
+                                                            await actions
+                                                                .getCachedVideoListForChannel(
+                                                          FFAppState()
+                                                              .ChannelId,
+                                                        );
+                                                        _model.itemsListCachedVideoList =
+                                                            await actions
+                                                                .extractItemsListFromJson(
+                                                          _model
+                                                              .cachedVideoListForChannel,
+                                                        );
+                                                        FFAppState()
+                                                                .videoListJson =
+                                                            _model
+                                                                .cachedVideoListForChannel!;
+                                                        safeSetState(() {});
+                                                        FFAppState().test = _model
+                                                            .itemsListCachedVideoList!
+                                                            .toList()
+                                                            .cast<dynamic>();
+                                                        safeSetState(() {});
+                                                        if (FFAppState()
+                                                                .test.isNotEmpty) {
+                                                          FFAppState()
+                                                                  .selectedItem =
+                                                              FFAppState()
+                                                                  .test
+                                                                  .firstOrNull!;
+                                                          safeSetState(() {});
+                                                          _model.extractedVideoIdIcon =
+                                                              actions
+                                                                  .extractVideoIdFromJson(
+                                                            _model
+                                                                .cachedVideoListForChannel,
+                                                          );
+                                                          FFAppState()
+                                                                  .selectedVideoId =
+                                                              _model
+                                                                  .extractedVideoIdIcon!;
+                                                          safeSetState(() {});
+                                                          FFAppState()
+                                                                  .HTMLForWebView =
+                                                              '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
+                                                          safeSetState(() {});
+                                                        }
+                                                      } else {
+                                                        _model.channelApiResult =
+                                                            await ChannelsListAPICallCall
+                                                                .call(
+                                                          channelId:
+                                                              FFAppState()
+                                                                  .ChannelId,
+                                                        );
+
+                                                        if ((_model
+                                                                .channelApiResult
+                                                                ?.succeeded ??
+                                                            true)) {
+                                                          _model.itemsApiResult =
+                                                              await PlaylistItemsListAPICallCall
+                                                                  .call(
+                                                            uploadsPlaylistId:
+                                                                getJsonField(
+                                                              (_model.channelApiResult
+                                                                      ?.jsonBody ??
+                                                                  ''),
+                                                              r'''$.items[0].contentDetails.relatedPlaylists.uploads''',
+                                                            ).toString(),
+                                                          );
+
+                                                          if ((_model
+                                                                  .itemsApiResult
+                                                                  ?.succeeded ??
+                                                              true)) {
+                                                            _model.videoListJsonSafelyIcon =
+                                                                await actions
+                                                                    .storeVideoListJsonSafely(
+                                                              (_model.itemsApiResult
+                                                                      ?.bodyText ??
+                                                                  ''),
+                                                              FFAppState()
+                                                                  .ChannelId,
+                                                            );
+                                                            await actions
+                                                                .updateChannelTimestamp(
+                                                              FFAppState()
+                                                                  .ChannelId,
+                                                            );
+                                                            FFAppState()
+                                                                    .videoListJson =
+                                                                _model
+                                                                    .videoListJsonSafelyIcon!;
+                                                            safeSetState(() {});
+                                                            await actions
+                                                                .debugPrintJson(
+                                                              FFAppState()
+                                                                  .videoListJson,
+                                                            );
+                                                            _model.itemsListicon =
+                                                                await actions
+                                                                    .extractItemsListFromJson(
+                                                              FFAppState()
+                                                                  .videoListJson,
+                                                            );
+                                                            FFAppState().test = _model
+                                                                .itemsListicon!
+                                                                .toList()
+                                                                .cast<
+                                                                    dynamic>();
+                                                            safeSetState(() {});
+                                                            _model.newVideoIdIcon =
+                                                                actions
+                                                                    .extractVideoIdFromJson(
+                                                              FFAppState()
+                                                                  .videoListJson,
+                                                            );
+                                                            if (FFAppState()
+                                                                    .test.isNotEmpty) {
+                                                              FFAppState()
+                                                                      .selectedVideoId =
+                                                                  _model
+                                                                      .newVideoIdIcon!;
+                                                              safeSetState(
+                                                                  () {});
+                                                              FFAppState()
+                                                                      .selectedItem =
+                                                                  FFAppState()
+                                                                      .test
+                                                                      .firstOrNull!;
+                                                              safeSetState(
+                                                                  () {});
+                                                              FFAppState()
+                                                                      .HTMLForWebView =
+                                                                  '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
+                                                              safeSetState(
+                                                                  () {});
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+
+                                                      FFAppState()
+                                                              .selectedIconUrl =
+                                                          channelsIconItem;
+                                                      safeSetState(() {});
+
+                                                      safeSetState(() {});
+                                                    },
+                                                    child: Container(
+                                                      width: 50.0,
+                                                      height: 50.0,
+                                                      clipBehavior:
+                                                          Clip.antiAlias,
+                                                      decoration: const BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                      ),
+                                                      child: Image.network(
+                                                        getJsonField(
+                                                          channelsIconItem,
+                                                          r'''$.iconUrl''',
+                                                        ).toString(),
+                                                        fit: BoxFit.cover,
+                                                      ),
                                                     ),
                                                   ),
                                                 ),
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.all(10.0),
-                                                  child: Column(
-                                                    mainAxisSize:
-                                                        MainAxisSize.max,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceEvenly,
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment
-                                                            .start,
-                                                    children: [
-                                                      Expanded(
-                                                        child: Align(
-                                                          alignment:
-                                                              const AlignmentDirectional(
-                                                                  0.0, 0.0),
-                                                          child: Padding(
-                                                            padding:
-                                                                const EdgeInsetsDirectional
-                                                                    .fromSTEB(
-                                                                        0.0,
-                                                                        0.0,
-                                                                        0.0,
-                                                                        8.0),
-                                                            child: Text(
-                                                              getJsonField(
-                                                                itemsItem,
-                                                                r'''$.snippet.title''',
-                                                              ).toString(),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyMedium
-                                                                  .override(
-                                                                    fontFamily:
-                                                                        'Inter',
-                                                                    fontSize:
-                                                                        14.0,
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                            ),
-                                                          ),
+                                              );
+                                            },
+                                            controller:
+                                                _model.listViewController1,
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          0.0, 0.0, 10.0, 0.0),
+                                      child: Icon(
+                                        Icons.add,
+                                        color: FlutterFlowTheme.of(context)
+                                            .primaryText,
+                                        size: 30.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Column(
+                            mainAxisSize: MainAxisSize.max,
+                            children: [
+                              FlutterFlowWebView(
+                                content: FFAppState().HTMLForWebView,
+                                width: MediaQuery.sizeOf(context).width * 1.0,
+                                height: MediaQuery.sizeOf(context).width * 0.65,
+                                verticalScroll: false,
+                                horizontalScroll: false,
+                                html: true,
+                              ),
+                              Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    8.0, 5.0, 8.0, 0.0),
+                                child: Container(
+                                  width: MediaQuery.sizeOf(context).width * 1.0,
+                                  decoration: BoxDecoration(
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryBackground,
+                                  ),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Container(
+                                            width: 50.0,
+                                            height: 50.0,
+                                            clipBehavior: Clip.antiAlias,
+                                            decoration: const BoxDecoration(
+                                              shape: BoxShape.circle,
+                                            ),
+                                            child: Image.network(
+                                              getJsonField(
+                                                FFAppState().selectedIconUrl,
+                                                r'''$.iconUrl''',
+                                              ).toString(),
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Padding(
+                                              padding: const EdgeInsetsDirectional
+                                                  .fromSTEB(5.0, 0.0, 0.0, 0.0),
+                                              child: Text(
+                                                getJsonField(
+                                                  FFAppState().selectedItem,
+                                                  r'''$.snippet.title''',
+                                                ).toString(),
+                                                textAlign: TextAlign.start,
+                                                maxLines: 3,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          fontSize: 16.0,
+                                                          letterSpacing: 0.0,
                                                         ),
-                                                      ),
-                                                      Row(
-                                                        mainAxisSize:
-                                                            MainAxisSize.max,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Expanded(
-                                                            child: Text(
-                                                              getJsonField(
-                                                                itemsItem,
-                                                                r'''$.snippet.channelTitle''',
-                                                              ).toString(),
-                                                              style: FlutterFlowTheme
-                                                                      .of(context)
-                                                                  .bodyMedium
-                                                                  .override(
-                                                                    fontFamily:
-                                                                        'Inter',
-                                                                    color: FlutterFlowTheme.of(
-                                                                            context)
-                                                                        .secondaryText,
-                                                                    fontSize:
-                                                                        12.0,
-                                                                    letterSpacing:
-                                                                        0.0,
-                                                                  ),
-                                                            ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Padding(
+                                            padding:
+                                                const EdgeInsetsDirectional.fromSTEB(
+                                                    55.0, 0.0, 0.0, 0.0),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.max,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Align(
+                                                  alignment:
+                                                      const AlignmentDirectional(
+                                                          -1.0, 0.0),
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsetsDirectional
+                                                            .fromSTEB(0.0, 0.0,
+                                                                15.0, 0.0),
+                                                    child: Text(
+                                                      getJsonField(
+                                                        FFAppState()
+                                                            .selectedItem,
+                                                        r'''$.snippet.channelTitle''',
+                                                      ).toString(),
+                                                      style: FlutterFlowTheme
+                                                              .of(context)
+                                                          .bodyMedium
+                                                          .override(
+                                                            fontFamily: 'Inter',
+                                                            color: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .secondaryText,
+                                                            fontSize: 12.0,
+                                                            letterSpacing: 0.0,
                                                           ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding:
-                                                                  const EdgeInsetsDirectional
-                                                                      .fromSTEB(
-                                                                          10.0,
-                                                                          0.0,
-                                                                          0.0,
-                                                                          0.0),
-                                                              child: Text(
-                                                                valueOrDefault<
-                                                                    String>(
-                                                                  functions
-                                                                      .formatIsoToSlashDate(
-                                                                          getJsonField(
-                                                                    itemsItem,
-                                                                    r'''$.snippet.publishedAt''',
-                                                                  ).toString()),
-                                                                  '0',
-                                                                ),
-                                                                style: FlutterFlowTheme.of(
-                                                                        context)
-                                                                    .bodyMedium
-                                                                    .override(
-                                                                      fontFamily:
-                                                                          'Inter',
-                                                                      color: FlutterFlowTheme.of(
-                                                                              context)
-                                                                          .secondaryText,
-                                                                      fontSize:
-                                                                          12.0,
-                                                                      letterSpacing:
-                                                                          0.0,
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                            ],
+                                                Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: [
+                                                    Text(
+                                                      valueOrDefault<String>(
+                                                        functions
+                                                            .formatIsoToSlashDate(
+                                                                valueOrDefault<
+                                                                    String>(
+                                                          getJsonField(
+                                                            FFAppState()
+                                                                .selectedItem,
+                                                            r'''$.snippet.publishedAt''',
+                                                          )?.toString(),
+                                                          '0',
+                                                        )),
+                                                        'yy/mm/dd',
+                                                      ),
+                                                      style: FlutterFlowTheme
+                                                              .of(context)
+                                                          .bodyMedium
+                                                          .override(
+                                                            fontFamily: 'Inter',
+                                                            color: FlutterFlowTheme
+                                                                    .of(context)
+                                                                .secondaryText,
+                                                            fontSize: 12.0,
+                                                            letterSpacing: 0.0,
+                                                          ),
+                                                    ),
+                                                    Align(
+                                                      alignment:
+                                                          const AlignmentDirectional(
+                                                              -1.0, 0.0),
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsetsDirectional
+                                                                .fromSTEB(
+                                                                    20.0,
+                                                                    0.0,
+                                                                    0.0,
+                                                                    0.0),
+                                                        child: Text(
+                                                          'YouTube利用規約',
+                                                          textAlign:
+                                                              TextAlign.end,
+                                                          style: FlutterFlowTheme
+                                                                  .of(context)
+                                                              .bodyMedium
+                                                              .override(
+                                                                fontFamily:
+                                                                    'Inter',
+                                                                color: FlutterFlowTheme.of(
+                                                                        context)
+                                                                    .secondaryText,
+                                                                fontSize: 10.0,
+                                                                letterSpacing:
+                                                                    0.0,
+                                                              ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
+                                          Align(
+                                            alignment:
+                                                const AlignmentDirectional(0.0, 0.0),
+                                            child: Icon(
+                                              Icons.bookmark_border,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              size: 24.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Divider(
+                                        thickness: 1.0,
+                                        color: FlutterFlowTheme.of(context)
+                                            .alternate,
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
-                            );
-                          },
-                          controller: _model.listViewController2,
-                        );
-                      },
+                            ],
+                          ),
+                          Builder(
+                            builder: (context) {
+                              final items =
+                                  FFAppState().test.toList().take(100).toList();
+
+                              return ListView.builder(
+                                padding: EdgeInsets.zero,
+                                primary: false,
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                itemCount: items.length,
+                                itemBuilder: (context, itemsIndex) {
+                                  final itemsItem = items[itemsIndex];
+                                  return Padding(
+                                    padding: const EdgeInsetsDirectional.fromSTEB(
+                                        8.0, 0.0, 8.0, 10.0),
+                                    child: InkWell(
+                                      splashColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      onTap: () async {
+                                        FFAppState().selectedVideoId =
+                                            getJsonField(
+                                          itemsItem,
+                                          r'''$.snippet.resourceId.videoId''',
+                                        ).toString();
+                                        safeSetState(() {});
+                                        FFAppState().selectedItem = itemsItem;
+                                        safeSetState(() {});
+                                        FFAppState().HTMLForWebView =
+                                            '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
+                                        safeSetState(() {});
+                                        await _model.columnController
+                                            ?.animateTo(
+                                          0,
+                                          duration: const Duration(milliseconds: 100),
+                                          curve: Curves.ease,
+                                        );
+                                      },
+                                      child: SizedBox(
+                                        width:
+                                            MediaQuery.sizeOf(context).width *
+                                                1.0,
+                                        child: Stack(
+                                          alignment:
+                                              const AlignmentDirectional(0.0, 0.0),
+                                          children: [
+                                            Align(
+                                              alignment: const AlignmentDirectional(
+                                                  0.0, 0.0),
+                                              child: Container(
+                                                width:
+                                                    MediaQuery.sizeOf(context)
+                                                            .width *
+                                                        1.0,
+                                                height: 80.0,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          6.0),
+                                                ),
+                                                child: Row(
+                                                  mainAxisSize:
+                                                      MainAxisSize.max,
+                                                  children: [
+                                                    Align(
+                                                      alignment:
+                                                          const AlignmentDirectional(
+                                                              -1.0, 0.0),
+                                                      child: ClipRRect(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10.0),
+                                                        child: Image.network(
+                                                          getJsonField(
+                                                            itemsItem,
+                                                            r'''$.snippet.thumbnails.default.url''',
+                                                          ).toString(),
+                                                          height: 80.0,
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (context,
+                                                                  error,
+                                                                  stackTrace) =>
+                                                              Image.asset(
+                                                            'assets/images/error_image.png',
+                                                            height: 80.0,
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Expanded(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsetsDirectional
+                                                                .fromSTEB(
+                                                                    6.0,
+                                                                    0.0,
+                                                                    0.0,
+                                                                    0.0),
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.max,
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceEvenly,
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Expanded(
+                                                              flex: 2,
+                                                              child: Align(
+                                                                alignment:
+                                                                    const AlignmentDirectional(
+                                                                        -1.0,
+                                                                        0.0),
+                                                                child: Padding(
+                                                                  padding: const EdgeInsetsDirectional
+                                                                      .fromSTEB(
+                                                                          0.0,
+                                                                          2.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                                  child: Text(
+                                                                    getJsonField(
+                                                                      itemsItem,
+                                                                      r'''$.snippet.title''',
+                                                                    ).toString(),
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .start,
+                                                                    maxLines: 3,
+                                                                    style: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .bodyMedium
+                                                                        .override(
+                                                                          fontFamily:
+                                                                              'Inter',
+                                                                          fontSize:
+                                                                              14.0,
+                                                                          letterSpacing:
+                                                                              0.0,
+                                                                        ),
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            Expanded(
+                                                              flex: 1,
+                                                              child: Row(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .max,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                children: [
+                                                                  Expanded(
+                                                                    child:
+                                                                        Padding(
+                                                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                                                          10.0,
+                                                                          0.0,
+                                                                          0.0,
+                                                                          0.0),
+                                                                      child:
+                                                                          Text(
+                                                                        valueOrDefault<
+                                                                            String>(
+                                                                          functions
+                                                                              .formatIsoToSlashDate(getJsonField(
+                                                                            itemsItem,
+                                                                            r'''$.snippet.publishedAt''',
+                                                                          ).toString()),
+                                                                          '0',
+                                                                        ),
+                                                                        style: FlutterFlowTheme.of(context)
+                                                                            .bodyMedium
+                                                                            .override(
+                                                                              fontFamily: 'Inter',
+                                                                              color: FlutterFlowTheme.of(context).secondaryText,
+                                                                              fontSize: 12.0,
+                                                                              letterSpacing: 0.0,
+                                                                            ),
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                controller: _model.listViewController2,
+                              );
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),

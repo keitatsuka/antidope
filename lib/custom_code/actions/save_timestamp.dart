@@ -10,16 +10,13 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 
 // Custom Action例
-String? saveTimestamp(String? timestampString) {
-  if (timestampString == null) {
-    return null;
-  }
+String? saveTimestamp(String channelId, int timestamp) {
+  final box = Hive.box('channelsBox');
+  final tsJson = box.get('channelTimestamps', defaultValue: '{}');
+  final Map<String, dynamic> map = jsonDecode(tsJson);
 
-  // Stringをintにパース
-  int timestamp = int.parse(timestampString);
-
-  var box = Hive.box('cacheBox');
-  box.put('timestamp', timestamp);
+  map[channelId] = timestamp; // 更新
+  box.put('channelTimestamps', jsonEncode(map));
 
   return null;
 }

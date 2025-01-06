@@ -9,23 +9,14 @@ import 'package:flutter/material.dart';
 
 import 'dart:convert';
 
+// Custom Action
 Future<List?> extractItemsListFromJson(String? jsonString) async {
-  /// MODIFY CODE ONLY BELOW THIS LINE
-
   if (jsonString == null || jsonString.isEmpty) {
-    // nullや空文字なら空のListを返す
     return [];
   }
-
-  // 文字列をJSONとしてデコード
   final data = jsonDecode(jsonString);
-
-  // 'items'が存在し、配列ならそれを返す。そうでなければ空リスト
-  if (data is Map && data['items'] != null && data['items'] is List) {
+  if (data is Map && data['items'] is List) {
     return data['items'];
-  } else {
-    return [];
   }
-
-  /// MODIFY CODE ONLY ABOVE THIS LINE
+  return [];
 }

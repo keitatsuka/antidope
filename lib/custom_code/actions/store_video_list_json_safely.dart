@@ -26,9 +26,9 @@ Future<String?> storeVideoListJsonSafely(
   }
 
   if (rawJsonString.isNotEmpty) {
-    // チャンネルIDをKeyに組み込んでHiveに保存
-    var box = Hive.box('cacheBox');
-    await box.put('videoList_${channelId}', rawJsonString);
+    // channelsBoxを使って保存
+    var box = Hive.box('channelsBox');
+    await box.put('videoList_$channelId', rawJsonString);
     return rawJsonString;
   }
   return null;
