@@ -4,25 +4,25 @@ import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_web_view.dart';
 import 'package:sticky_headers/sticky_headers.dart';
 import 'package:flutter/material.dart';
-import 'layout_x_model.dart';
-export 'layout_x_model.dart';
+import 'twitter_model.dart';
+export 'twitter_model.dart';
 
-class LayoutXWidget extends StatefulWidget {
-  const LayoutXWidget({super.key});
+class TwitterWidget extends StatefulWidget {
+  const TwitterWidget({super.key});
 
   @override
-  State<LayoutXWidget> createState() => _LayoutXWidgetState();
+  State<TwitterWidget> createState() => _TwitterWidgetState();
 }
 
-class _LayoutXWidgetState extends State<LayoutXWidget> {
-  late LayoutXModel _model;
+class _TwitterWidgetState extends State<TwitterWidget> {
+  late TwitterModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => LayoutXModel());
+    _model = createModel(context, () => TwitterModel());
   }
 
   @override
@@ -56,7 +56,7 @@ class _LayoutXWidgetState extends State<LayoutXWidget> {
             ),
           );
         }
-        final layoutXYoutubeDataAPIResponse = snapshot.data!;
+        final twitterYoutubeDataAPIResponse = snapshot.data!;
 
         return GestureDetector(
           onTap: () {

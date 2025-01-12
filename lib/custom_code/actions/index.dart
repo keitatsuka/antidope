@@ -30,3 +30,14 @@ export 'get_cached_video_list_for_channel.dart'
     show getCachedVideoListForChannel;
 export 'debug_print_json.dart' show debugPrintJson;
 export 'find_icon_url_by_channel_id.dart' show findIconUrlByChannelId;
+export 'fetch_all_bookmarks.dart' show fetchAllBookmarks;
+export 'create_bookmark.dart' show createBookmark;
+export 'remove_bookmark.dart' show removeBookmark;
+export 'debug_bookmark_box_contents.dart' show debugBookmarkBoxContents;
+export 'find_channel_icon_url.dart' show findChannelIconUrl;
+export 'check_channel_exists.dart' show checkChannelExists;
+export 'safe_to_string_value.dart' show safeToStringValue;
+export 'load_channel_data.dart' show loadChannelData;
+export 'perform_local_search.dart' show performLocalSearch;
+export 'register_you_tube_channel.dart' show registerYouTubeChannel;
+export 'load_more_videos_for_channel.dart' show loadMoreVideosForChannel;

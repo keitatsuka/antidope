@@ -1,10 +1,7 @@
 // Export pages
-export '/old/registration/registration_widget.dart' show RegistrationWidget;
-export '/old/youtube/youtube_widget.dart' show YoutubeWidget;
-export '/old/twitter/twitter_widget.dart' show TwitterWidget;
+export '/page/youtube/youtube_widget.dart' show YoutubeWidget;
 export '/new/layout_youtube/layout_youtube_widget.dart'
     show LayoutYoutubeWidget;
-export '/new/layout_home/layout_home_widget.dart' show LayoutHomeWidget;
-export '/new/layout_setting/layout_setting_widget.dart'
-    show LayoutSettingWidget;
-export '/new/layout_x/layout_x_widget.dart' show LayoutXWidget;
+export '/page/home/home_widget.dart' show HomeWidget;
+export '/page/setting/setting_widget.dart' show SettingWidget;
+export '/page/twitter/twitter_widget.dart' show TwitterWidget;

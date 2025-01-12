@@ -61,13 +61,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               : const NavBarPage(),
         ),
         FFRoute(
-          name: 'registration',
-          path: '/registration',
-          builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'registration')
-              : const RegistrationWidget(),
-        ),
-        FFRoute(
           name: 'Youtube',
           path: '/youtube',
           builder: (context, params) => params.isEmpty
@@ -75,37 +68,29 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
               : const YoutubeWidget(),
         ),
         FFRoute(
-          name: 'twitter',
-          path: '/twitter',
-          builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'twitter')
-              : const TwitterWidget(),
-        ),
-        FFRoute(
           name: 'layoutYoutube',
           path: '/layoutYoutube',
           builder: (context, params) => const LayoutYoutubeWidget(),
         ),
         FFRoute(
-          name: 'layoutHome',
-          path: '/layoutHome',
-          builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'layoutHome')
-              : const LayoutHomeWidget(),
+          name: 'Home',
+          path: '/home',
+          builder: (context, params) =>
+              params.isEmpty ? const NavBarPage(initialPage: 'Home') : const HomeWidget(),
         ),
         FFRoute(
-          name: 'layoutSetting',
-          path: '/layoutSetting',
+          name: 'Setting',
+          path: '/setting',
           builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'layoutSetting')
-              : const LayoutSettingWidget(),
+              ? const NavBarPage(initialPage: 'Setting')
+              : const SettingWidget(),
         ),
         FFRoute(
-          name: 'layoutX',
-          path: '/layoutX',
+          name: 'Twitter',
+          path: '/twitter',
           builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'layoutX')
-              : const LayoutXWidget(),
+              ? const NavBarPage(initialPage: 'Twitter')
+              : const TwitterWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );

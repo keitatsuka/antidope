@@ -1,29 +1,26 @@
 import '/flutter_flow/flutter_flow_theme.dart';
-import '/flutter_flow/flutter_flow_timer.dart';
 import '/flutter_flow/flutter_flow_util.dart';
-import 'package:stop_watch_timer/stop_watch_timer.dart';
 import 'package:flutter/material.dart';
-import 'layout_home_model.dart';
-export 'layout_home_model.dart';
+import 'package:provider/provider.dart';
+import 'home_model.dart';
+export 'home_model.dart';
 
-class LayoutHomeWidget extends StatefulWidget {
-  const LayoutHomeWidget({super.key});
+class HomeWidget extends StatefulWidget {
+  const HomeWidget({super.key});
 
   @override
-  State<LayoutHomeWidget> createState() => _LayoutHomeWidgetState();
+  State<HomeWidget> createState() => _HomeWidgetState();
 }
 
-class _LayoutHomeWidgetState extends State<LayoutHomeWidget> {
-  late LayoutHomeModel _model;
+class _HomeWidgetState extends State<HomeWidget> {
+  late HomeModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => LayoutHomeModel());
-
-    WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
+    _model = createModel(context, () => HomeModel());
   }
 
   @override
@@ -35,6 +32,8 @@ class _LayoutHomeWidgetState extends State<LayoutHomeWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -195,11 +194,20 @@ class _LayoutHomeWidgetState extends State<LayoutHomeWidget> {
                                 child: Padding(
                                   padding: const EdgeInsetsDirectional.fromSTEB(
                                       0.0, 0.0, 15.0, 0.0),
-                                  child: Icon(
-                                    Icons.settings_sharp,
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
-                                    size: 24.0,
+                                  child: InkWell(
+                                    splashColor: Colors.transparent,
+                                    focusColor: Colors.transparent,
+                                    hoverColor: Colors.transparent,
+                                    highlightColor: Colors.transparent,
+                                    onTap: () async {
+                                      context.pushNamed('Setting');
+                                    },
+                                    child: Icon(
+                                      Icons.settings_sharp,
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      size: 24.0,
+                                    ),
                                   ),
                                 ),
                               ),
@@ -354,446 +362,110 @@ class _LayoutHomeWidgetState extends State<LayoutHomeWidget> {
                             thickness: 1.0,
                             color: FlutterFlowTheme.of(context).alternate,
                           ),
-                          ListView(
-                            padding: EdgeInsets.zero,
-                            shrinkWrap: true,
-                            scrollDirection: Axis.vertical,
-                            children: [
-                              Align(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 0.0, 0.0, 5.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(-1.0, 0.0),
-                                          child: Text(
-                                            'オガワコウ / misclog  - Apple・ガジェット',
-                                            maxLines: 1,
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  letterSpacing: 0.0,
-                                                ),
+                          Builder(
+                            builder: (context) {
+                              final channelListHome = FFAppState()
+                                  .channelsList
+                                  .toList()
+                                  .take(5)
+                                  .toList();
+
+                              return ListView.builder(
+                                padding: EdgeInsets.zero,
+                                shrinkWrap: true,
+                                scrollDirection: Axis.vertical,
+                                itemCount: channelListHome.length,
+                                itemBuilder: (context, channelListHomeIndex) {
+                                  final channelListHomeItem =
+                                      channelListHome[channelListHomeIndex];
+                                  return Align(
+                                    alignment: const AlignmentDirectional(0.0, 0.0),
+                                    child: Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          0.0, 0.0, 0.0, 5.0),
+                                      child: Row(
+                                        mainAxisSize: MainAxisSize.max,
+                                        children: [
+                                          Expanded(
+                                            flex: 2,
+                                            child: Align(
+                                              alignment: const AlignmentDirectional(
+                                                  -1.0, 0.0),
+                                              child: Text(
+                                                getJsonField(
+                                                  channelListHomeItem,
+                                                  r'''$.channelName''',
+                                                ).toString(),
+                                                maxLines: 1,
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                        child: VerticalDivider(
-                                          width: 5.0,
-                                          thickness: 1.0,
-                                          color: Color(0xFFBDBDBD),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
-                                          child: Text(
-                                            '1:12',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 18.0,
-                                                  letterSpacing: 0.0,
-                                                ),
+                                          const SizedBox(
+                                            height: 20.0,
+                                            child: VerticalDivider(
+                                              width: 5.0,
+                                              thickness: 1.0,
+                                              color: Color(0xFFBDBDBD),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                        child: VerticalDivider(
-                                          width: 5.0,
-                                          thickness: 1.0,
-                                          color: Color(0xFFBDBDBD),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
-                                          child: Text(
-                                            '1:30',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 18.0,
-                                                  letterSpacing: 0.0,
-                                                ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Align(
+                                              alignment: const AlignmentDirectional(
+                                                  0.0, 0.0),
+                                              child: Text(
+                                                '1:12',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          fontSize: 18.0,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 0.0, 0.0, 5.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(-1.0, 0.0),
-                                          child: Text(
-                                            'インテリアMAGAZINE【KENTO】',
-                                            maxLines: 1,
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  letterSpacing: 0.0,
-                                                ),
+                                          const SizedBox(
+                                            height: 20.0,
+                                            child: VerticalDivider(
+                                              width: 5.0,
+                                              thickness: 1.0,
+                                              color: Color(0xFFBDBDBD),
+                                            ),
                                           ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                        child: VerticalDivider(
-                                          width: 5.0,
-                                          thickness: 1.0,
-                                          color: Color(0xFFBDBDBD),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
-                                          child: Text(
-                                            '1:00',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  color: FlutterFlowTheme.of(
-                                                          context)
-                                                      .error,
-                                                  fontSize: 18.0,
-                                                  letterSpacing: 0.0,
-                                                ),
+                                          Expanded(
+                                            flex: 1,
+                                            child: Align(
+                                              alignment: const AlignmentDirectional(
+                                                  0.0, 0.0),
+                                              child: Text(
+                                                '1:30',
+                                                style:
+                                                    FlutterFlowTheme.of(context)
+                                                        .bodyMedium
+                                                        .override(
+                                                          fontFamily: 'Inter',
+                                                          fontSize: 18.0,
+                                                          letterSpacing: 0.0,
+                                                        ),
+                                              ),
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                        child: VerticalDivider(
-                                          width: 5.0,
-                                          thickness: 1.0,
-                                          color: Color(0xFFBDBDBD),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
-                                          child: Text(
-                                            '1:00',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 18.0,
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 0.0, 0.0, 5.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(-1.0, 0.0),
-                                          child: Text(
-                                            'AgStyle Tennis',
-                                            maxLines: 1,
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                        child: VerticalDivider(
-                                          width: 5.0,
-                                          thickness: 1.0,
-                                          color: Color(0xFFBDBDBD),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
-                                          child: Text(
-                                            '00:12',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 18.0,
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                        child: VerticalDivider(
-                                          width: 5.0,
-                                          thickness: 1.0,
-                                          color: Color(0xFFBDBDBD),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
-                                          child: Text(
-                                            '--:--',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 18.0,
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 0.0, 0.0, 5.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(-1.0, 0.0),
-                                          child: Text(
-                                            'ジョージ -メンズコーチ-',
-                                            maxLines: 1,
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                        child: VerticalDivider(
-                                          width: 5.0,
-                                          thickness: 1.0,
-                                          color: Color(0xFFBDBDBD),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
-                                          child: FlutterFlowTimer(
-                                            initialTime:
-                                                _model.timerInitialTimeMs1,
-                                            getDisplayTime: (value) =>
-                                                StopWatchTimer.getDisplayTime(
-                                                    value,
-                                                    milliSecond: false),
-                                            controller: _model.timerController1,
-                                            updateStateInterval:
-                                                const Duration(milliseconds: 1000),
-                                            onChanged: (value, displayTime,
-                                                shouldUpdate) {
-                                              _model.timerMilliseconds1 = value;
-                                              _model.timerValue1 = displayTime;
-                                              if (shouldUpdate) {
-                                                safeSetState(() {});
-                                              }
-                                            },
-                                            textAlign: TextAlign.start,
-                                            style: FlutterFlowTheme.of(context)
-                                                .headlineSmall
-                                                .override(
-                                                  fontFamily: 'Sora',
-                                                  fontSize: 14.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.normal,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                        child: VerticalDivider(
-                                          width: 5.0,
-                                          thickness: 1.0,
-                                          color: Color(0xFFBDBDBD),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
-                                          child: Text(
-                                            '--:--',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 18.0,
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Align(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.fromSTEB(
-                                      0.0, 0.0, 0.0, 5.0),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Expanded(
-                                        flex: 2,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(-1.0, 0.0),
-                                          child: Text(
-                                            'ジョージ -メンズコーチ-',
-                                            maxLines: 1,
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                        child: VerticalDivider(
-                                          width: 5.0,
-                                          thickness: 1.0,
-                                          color: Color(0xFFBDBDBD),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
-                                          child: FlutterFlowTimer(
-                                            initialTime:
-                                                _model.timerInitialTimeMs2,
-                                            getDisplayTime: (value) =>
-                                                StopWatchTimer.getDisplayTime(
-                                                    value,
-                                                    milliSecond: false),
-                                            controller: _model.timerController2,
-                                            updateStateInterval:
-                                                const Duration(milliseconds: 1000),
-                                            onChanged: (value, displayTime,
-                                                shouldUpdate) {
-                                              _model.timerMilliseconds2 = value;
-                                              _model.timerValue2 = displayTime;
-                                              if (shouldUpdate) {
-                                                safeSetState(() {});
-                                              }
-                                            },
-                                            textAlign: TextAlign.start,
-                                            style: FlutterFlowTheme.of(context)
-                                                .headlineSmall
-                                                .override(
-                                                  fontFamily: 'Sora',
-                                                  fontSize: 14.0,
-                                                  letterSpacing: 0.0,
-                                                  fontWeight: FontWeight.normal,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        height: 20.0,
-                                        child: VerticalDivider(
-                                          width: 5.0,
-                                          thickness: 1.0,
-                                          color: Color(0xFFBDBDBD),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 1,
-                                        child: Align(
-                                          alignment:
-                                              const AlignmentDirectional(0.0, 0.0),
-                                          child: Text(
-                                            '--:--',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  fontSize: 18.0,
-                                                  letterSpacing: 0.0,
-                                                ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                                    ),
+                                  );
+                                },
+                              );
+                            },
                           ),
                         ].divide(const SizedBox(height: 5.0)),
                       ),

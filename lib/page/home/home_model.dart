@@ -1,8 +1,8 @@
 import '/flutter_flow/flutter_flow_util.dart';
-import 'layout_x_widget.dart' show LayoutXWidget;
+import 'home_widget.dart' show HomeWidget;
 import 'package:flutter/material.dart';
 
-class LayoutXModel extends FlutterFlowModel<LayoutXWidget> {
+class HomeModel extends FlutterFlowModel<HomeWidget> {
   @override
   void initState(BuildContext context) {}
 

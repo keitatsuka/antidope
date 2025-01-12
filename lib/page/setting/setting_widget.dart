@@ -1,26 +1,30 @@
+import '/components/register_you_tube_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/flutter_flow/flutter_flow_widgets.dart';
+import '/custom_code/actions/index.dart' as actions;
 import 'package:flutter/material.dart';
-import 'layout_setting_model.dart';
-export 'layout_setting_model.dart';
+import 'package:provider/provider.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
+import 'setting_model.dart';
+export 'setting_model.dart';
 
-class LayoutSettingWidget extends StatefulWidget {
-  const LayoutSettingWidget({super.key});
+class SettingWidget extends StatefulWidget {
+  const SettingWidget({super.key});
 
   @override
-  State<LayoutSettingWidget> createState() => _LayoutSettingWidgetState();
+  State<SettingWidget> createState() => _SettingWidgetState();
 }
 
-class _LayoutSettingWidgetState extends State<LayoutSettingWidget> {
-  late LayoutSettingModel _model;
+class _SettingWidgetState extends State<SettingWidget> {
+  late SettingModel _model;
 
   final scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
     super.initState();
-    _model = createModel(context, () => LayoutSettingModel());
+    _model = createModel(context, () => SettingModel());
   }
 
   @override
@@ -32,6 +36,8 @@ class _LayoutSettingWidgetState extends State<LayoutSettingWidget> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<FFAppState>();
+
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).unfocus();
@@ -757,140 +763,153 @@ class _LayoutSettingWidgetState extends State<LayoutSettingWidget> {
                               thickness: 1.0,
                               color: FlutterFlowTheme.of(context).alternate,
                             ),
-                            ListView(
-                              padding: EdgeInsets.zero,
-                              shrinkWrap: true,
-                              scrollDirection: Axis.vertical,
-                              children: [
-                                Align(
-                                  alignment: const AlignmentDirectional(0.0, 0.0),
-                                  child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 5.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: Align(
-                                            alignment:
-                                                const AlignmentDirectional(-1.0, 0.0),
-                                            child: Text(
-                                              'オガワコウ / misclog  - Apple・ガジェット',
-                                              maxLines: 1,
-                                              style:
-                                                  FlutterFlowTheme.of(context)
+                            Builder(
+                              builder: (context) {
+                                final channelListSetting = FFAppState()
+                                    .channelsList
+                                    .toList()
+                                    .take(5)
+                                    .toList();
+
+                                return ListView.builder(
+                                  padding: EdgeInsets.zero,
+                                  shrinkWrap: true,
+                                  scrollDirection: Axis.vertical,
+                                  itemCount: channelListSetting.length,
+                                  itemBuilder:
+                                      (context, channelListSettingIndex) {
+                                    final channelListSettingItem =
+                                        channelListSetting[
+                                            channelListSettingIndex];
+                                    return Align(
+                                      alignment: const AlignmentDirectional(0.0, 0.0),
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 0.0, 0.0, 5.0),
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.max,
+                                          children: [
+                                            Expanded(
+                                              flex: 3,
+                                              child: Align(
+                                                alignment: const AlignmentDirectional(
+                                                    -1.0, 0.0),
+                                                child: Text(
+                                                  getJsonField(
+                                                    channelListSettingItem,
+                                                    r'''$.channelName''',
+                                                  ).toString(),
+                                                  maxLines: 1,
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
                                                       .bodyMedium
                                                       .override(
                                                         fontFamily: 'Inter',
                                                         letterSpacing: 0.0,
                                                       ),
+                                                ),
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.delete,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 24.0,
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Align(
-                                            alignment:
-                                                const AlignmentDirectional(0.0, 0.0),
-                                            child: Text(
-                                              '1:30',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        fontSize: 18.0,
-                                                        letterSpacing: 0.0,
-                                                      ),
+                                            InkWell(
+                                              splashColor: Colors.transparent,
+                                              focusColor: Colors.transparent,
+                                              hoverColor: Colors.transparent,
+                                              highlightColor:
+                                                  Colors.transparent,
+                                              onTap: () async {
+                                                await actions
+                                                    .deleteChannelFromHive(
+                                                  channelListSettingIndex,
+                                                );
+                                                FFAppState()
+                                                    .removeAtIndexFromChannelsList(
+                                                        channelListSettingIndex);
+                                                safeSetState(() {});
+                                              },
+                                              child: Icon(
+                                                Icons.delete,
+                                                color:
+                                                    FlutterFlowTheme.of(context)
+                                                        .secondaryText,
+                                                size: 24.0,
+                                              ),
                                             ),
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.edit,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 24.0,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Align(
-                                  alignment: const AlignmentDirectional(0.0, 0.0),
-                                  child: Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        0.0, 0.0, 0.0, 5.0),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: Align(
-                                            alignment:
-                                                const AlignmentDirectional(-1.0, 0.0),
-                                            child: Text(
-                                              'インテリアMAGAZINE【KENTO】',
-                                              maxLines: 1,
-                                              style:
-                                                  FlutterFlowTheme.of(context)
-                                                      .bodyMedium
-                                                      .override(
-                                                        fontFamily: 'Inter',
-                                                        letterSpacing: 0.0,
-                                                      ),
-                                            ),
-                                          ),
-                                        ),
-                                        Icon(
-                                          Icons.delete,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 24.0,
-                                        ),
-                                        Expanded(
-                                          flex: 1,
-                                          child: Align(
-                                            alignment:
-                                                const AlignmentDirectional(0.0, 0.0),
-                                            child: Text(
-                                              '--:--',
-                                              style:
-                                                  FlutterFlowTheme.of(context)
+                                            Expanded(
+                                              flex: 1,
+                                              child: Align(
+                                                alignment: const AlignmentDirectional(
+                                                    0.0, 0.0),
+                                                child: Text(
+                                                  '1:30',
+                                                  style: FlutterFlowTheme.of(
+                                                          context)
                                                       .bodyMedium
                                                       .override(
                                                         fontFamily: 'Inter',
                                                         fontSize: 18.0,
                                                         letterSpacing: 0.0,
                                                       ),
+                                                ),
+                                              ),
                                             ),
-                                          ),
+                                            Icon(
+                                              Icons.edit,
+                                              color:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryText,
+                                              size: 24.0,
+                                            ),
+                                          ],
                                         ),
-                                        Icon(
-                                          Icons.edit,
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          size: 24.0,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                             ),
                             Align(
                               alignment: const AlignmentDirectional(0.0, 0.0),
-                              child: Icon(
-                                Icons.add,
-                                color:
-                                    FlutterFlowTheme.of(context).secondaryText,
-                                size: 24.0,
+                              child: Builder(
+                                builder: (context) => InkWell(
+                                  splashColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  onTap: () async {
+                                    await showDialog(
+                                      context: context,
+                                      builder: (dialogContext) {
+                                        return Dialog(
+                                          elevation: 0,
+                                          insetPadding: EdgeInsets.zero,
+                                          backgroundColor: Colors.transparent,
+                                          alignment: const AlignmentDirectional(
+                                                  0.0, 0.0)
+                                              .resolve(
+                                                  Directionality.of(context)),
+                                          child: WebViewAware(
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                FocusScope.of(dialogContext)
+                                                    .unfocus();
+                                                FocusManager
+                                                    .instance.primaryFocus
+                                                    ?.unfocus();
+                                              },
+                                              child: const RegisterYouTubeWidget(),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Icon(
+                                    Icons.add,
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
+                                    size: 24.0,
+                                  ),
+                                ),
                               ),
                             ),
                           ].divide(const SizedBox(height: 5.0)),
@@ -1143,62 +1162,60 @@ class _LayoutSettingWidgetState extends State<LayoutSettingWidget> {
                       ),
                     ),
                   ),
-                  Expanded(
-                    child: Align(
-                      alignment: const AlignmentDirectional(0.0, 1.0),
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.fromSTEB(
-                            0.0, 20.0, 0.0, 20.0),
-                        child: Container(
-                          width: MediaQuery.sizeOf(context).width * 0.9,
-                          height: 20.0,
-                          decoration: BoxDecoration(
-                            color: FlutterFlowTheme.of(context)
-                                .secondaryBackground,
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.max,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                'プライバシーポリシー',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      fontFamily: 'Inter',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      fontSize: 12.0,
-                                      letterSpacing: 0.0,
-                                    ),
-                              ),
-                              Text(
-                                '利用規約',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      fontFamily: 'Inter',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      fontSize: 12.0,
-                                      letterSpacing: 0.0,
-                                    ),
-                              ),
-                              Text(
-                                'YouTube利用規約',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                      fontFamily: 'Inter',
-                                      color: FlutterFlowTheme.of(context)
-                                          .secondaryText,
-                                      fontSize: 12.0,
-                                      letterSpacing: 0.0,
-                                    ),
-                              ),
-                            ],
-                          ),
+                  Align(
+                    alignment: const AlignmentDirectional(0.0, 1.0),
+                    child: Padding(
+                      padding:
+                          const EdgeInsetsDirectional.fromSTEB(0.0, 20.0, 0.0, 20.0),
+                      child: Container(
+                        width: MediaQuery.sizeOf(context).width * 0.9,
+                        height: 20.0,
+                        decoration: BoxDecoration(
+                          color:
+                              FlutterFlowTheme.of(context).secondaryBackground,
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Text(
+                              'プライバシーポリシー',
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                    fontFamily: 'Inter',
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
+                                    fontSize: 12.0,
+                                    letterSpacing: 0.0,
+                                  ),
+                            ),
+                            Text(
+                              '利用規約',
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                    fontFamily: 'Inter',
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
+                                    fontSize: 12.0,
+                                    letterSpacing: 0.0,
+                                  ),
+                            ),
+                            Text(
+                              'YouTube利用規約',
+                              style: FlutterFlowTheme.of(context)
+                                  .bodyMedium
+                                  .override(
+                                    fontFamily: 'Inter',
+                                    color: FlutterFlowTheme.of(context)
+                                        .secondaryText,
+                                    fontSize: 12.0,
+                                    letterSpacing: 0.0,
+                                  ),
+                            ),
+                          ],
                         ),
                       ),
                     ),

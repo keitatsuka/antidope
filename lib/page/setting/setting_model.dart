@@ -1,8 +1,8 @@
 import '/flutter_flow/flutter_flow_util.dart';
-import 'layout_setting_widget.dart' show LayoutSettingWidget;
+import 'setting_widget.dart' show SettingWidget;
 import 'package:flutter/material.dart';
 
-class LayoutSettingModel extends FlutterFlowModel<LayoutSettingWidget> {
+class SettingModel extends FlutterFlowModel<SettingWidget> {
   @override
   void initState(BuildContext context) {}
 

@@ -18,6 +18,7 @@ Future<String?> initializeHive() async {
 // ここで 'channelsBox' も open
   await Hive.openBox('channelsBox');
   await Hive.openBox('bookmarkBox');
+  await Hive.openBox('cacheBox');
 // 'cacheBox' は使わないなら開かないでOK
 // どうしても別用途で使うなら openBox('cacheBox') は残してよい
 
