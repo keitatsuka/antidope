@@ -10,7 +10,14 @@ import 'package:flutter/material.dart';
 import '/custom_code/actions/index.dart'; // Import other custom actions
 import '/flutter_flow/custom_functions.dart'; // Import custom functions
 
+import 'dart:convert';
 import 'package:hive/hive.dart';
+
+/*
+  Action: updateChannelTimestamp
+  Purpose: Update the 'channelTimestamps' in 'channelsBox' 
+           to mark the current time for a given channelId.
+*/
 
 Future<String?> updateChannelTimestamp(String channelId) async {
   final box = Hive.box('channelsBox');
@@ -22,6 +29,3 @@ Future<String?> updateChannelTimestamp(String channelId) async {
   await box.put('channelTimestamps', jsonEncode(timestampsMap));
   return null;
 }
-
-// Set your action name, define your arguments and return parameter,
-// and then add the boilerplate code using the green button on the right!

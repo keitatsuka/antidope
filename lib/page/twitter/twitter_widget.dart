@@ -220,10 +220,11 @@ class _TwitterWidgetState extends State<TwitterWidget> {
                           ),
                         ),
                       ),
-                      content: const FlutterFlowWebView(
+                      content: FlutterFlowWebView(
                         content: 'https://flutter.dev',
                         bypass: false,
-                        height: 630.0,
+                        width: MediaQuery.sizeOf(context).width * 1.0,
+                        height: MediaQuery.sizeOf(context).height * 1.0,
                         verticalScroll: false,
                         horizontalScroll: false,
                       ),

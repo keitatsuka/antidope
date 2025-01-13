@@ -9,16 +9,22 @@ import 'package:flutter/material.dart';
 
 import '/custom_code/actions/index.dart';
 import '/flutter_flow/custom_functions.dart';
-
 import 'dart:convert';
 
 Future<String?> performLocalSearch(String query) async {
   final trimmed = query.trim();
+
+  // ─────────────────────────────────────────
+  // (1) 検索文字列が空なら => 検索解除 (searchActive=false)
+  // ─────────────────────────────────────────
   if (trimmed.isEmpty) {
-    // 検索文字列が空の場合は適宜リセット処理
+    FFAppState().searchActive = false;
     return null;
   }
 
+  // ─────────────────────────────────────────
+  // (2) URL検索モードを判定
+  // ─────────────────────────────────────────
   final lower = trimmed.toLowerCase();
   final isUrlSearch = lower.contains("watch?v=") ||
       lower.contains("youtu.be/") ||
@@ -28,36 +34,49 @@ Future<String?> performLocalSearch(String query) async {
     // ▼ URL検索モード
     final vid = _extractVideoId(trimmed);
     if (vid == null || vid.isEmpty) {
-      return null; // videoIdが無効なら何もしない
+      FFAppState().searchActive = false; // URL解析できない → 検索解除
+      return null;
     }
+
+    // URL検索で単一表示する場合 → 検索結果一覧ではなく"単体表示"とみなす
+    // よって searchActive はオフにしてしまう
+    FFAppState().searchActive = false;
+
     // 下リストを消去
     FFAppState().test = [];
     FFAppState().videoListJson = '';
+
     // 単体動画表示
     FFAppState().selectedVideoId = vid;
     FFAppState().HTMLForWebView = _buildIframeHtml(vid);
 
-    // 「iconUrl」は空文字をJSON形式でセット (一段)
+    // 「iconUrl」は空文字をJSON形式でセット (例: {"iconUrl": ""})
     FFAppState().selectedIconUrl = {"iconUrl": ""};
 
     // selectedItem も不要ならnull
     FFAppState().selectedItem = null;
+
     return null;
   }
 
-  // ▼ キーワード検索モード
+  // ─────────────────────────────────────────
+  // (3) 通常のキーワード検索 → searchActive = true
+  // ─────────────────────────────────────────
+  FFAppState().searchActive = true;
+
   if (FFAppState().videoListJson.isEmpty) {
-    // もともとチャンネル動画JSONが無いなら検索不可
+    // そもそもチャンネル動画が無い状態 → 検索不可
     return null;
   }
+
   final items = await extractItemsListFromJson(FFAppState().videoListJson);
   if (items == null || items.isEmpty) {
     return null;
   }
 
+  // ローカル検索(タイトルに query が含まれるか)
   final matched = <dynamic>[];
   final lowerQuery = trimmed.toLowerCase();
-
   for (final item in items) {
     if (item is Map && item["snippet"] is Map) {
       final title = (item["snippet"]["title"] ?? "").toString().toLowerCase();
@@ -67,20 +86,19 @@ Future<String?> performLocalSearch(String query) async {
     }
   }
 
-  // 新しいリストで更新
+  // FFAppState().test を更新
   FFAppState().test = matched;
 
   if (matched.isEmpty) {
-    // ヒットが0件なら上部もクリア
+    // 0件ヒット → 上部もクリア
     FFAppState().selectedVideoId = '';
     FFAppState().HTMLForWebView = '';
     FFAppState().selectedItem = null;
-    // iconUrl空 (一段)
     FFAppState().selectedIconUrl = {"iconUrl": ""};
     return null;
   }
 
-  // 先頭アイテム
+  // 先頭アイテムを選択して表示
   final first = matched.first;
   final vid = _extractVideoIdFromItem(first);
   if (vid == null || vid.isEmpty) {
@@ -95,7 +113,6 @@ Future<String?> performLocalSearch(String query) async {
   if (snippet is Map) {
     final chId = snippet["channelId"]?.toString() ?? "";
     if (chId.isNotEmpty) {
-      // ここでアクションを呼んで「一段構造のオブジェクト」に整形
       final channelIconObj = await _findChannelIconObj(chId);
       FFAppState().selectedIconUrl = channelIconObj;
     } else {
@@ -108,10 +125,14 @@ Future<String?> performLocalSearch(String query) async {
   return null;
 }
 
-/// 動画URLからvideoId抽出
+// ─────────────────────────────────────
+// 以下、URL解析や動画ID取得のヘルパー群
+// ─────────────────────────────────────
+
 String? _extractVideoId(String url) {
   final uri = Uri.tryParse(url);
   if (uri == null) return null;
+
   if (uri.queryParameters.containsKey("v")) {
     return uri.queryParameters["v"];
   }
@@ -130,7 +151,6 @@ String? _extractVideoId(String url) {
   return null;
 }
 
-/// 既存item(playlistItem)からvideoIdを抜き出す
 String? _extractVideoIdFromItem(dynamic item) {
   if (item is Map) {
     final snippet = item["snippet"];
@@ -180,41 +200,23 @@ String _buildIframeHtml(String videoId) {
 ''';
 }
 
-/// チャンネルアイコンをJSONオブジェクト { "iconUrl": "<url>" } 形式で返す
+/// チャンネルアイコンを { "iconUrl": "..." } 形式に整形
 Future<Map<String, dynamic>> _findChannelIconObj(String channelId) async {
-  // 既存の findIconUrlByChannelId() が どの型を返すかで整形が変わる
-
   final dynamic iconAny = await findIconUrlByChannelId(channelId);
-  // たとえば iconAny が下記いずれかの場合を想定:
-  //   1) "https://..." (String)
-  //   2) { "iconUrl": "https://..." } (Map)
-  //   3) null
-
   if (iconAny == null) {
-    // 見つからない → 空URL
     return {"iconUrl": ""};
   }
-
   if (iconAny is String) {
-    // 文字列なら { "iconUrl": "<文字列>" } として一段化
     return {"iconUrl": iconAny};
   }
-
-  // もしiconAnyが Map 形式の場合:
   if (iconAny is Map) {
-    // 1段なら { "iconUrl":"https://..." }
     final inner = iconAny["iconUrl"];
     if (inner is String) {
-      // "iconUrl"キーが文字列 = 既にOK
       return {"iconUrl": inner};
     }
-    // さらに2段など別の構造の場合はここで再帰的に処理 or "" を返す
-    // 例: {"iconUrl": {"iconUrl": "https://..."} } をフラットにする
     if (inner is Map && inner["iconUrl"] is String) {
       return {"iconUrl": inner["iconUrl"]};
     }
   }
-
-  // その他の場合は空を返す
   return {"iconUrl": ""};
 }

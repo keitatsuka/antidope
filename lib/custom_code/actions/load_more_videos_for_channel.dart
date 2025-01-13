@@ -7,19 +7,18 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-// load_more_videos_for_channel.dart
 import '/custom_code/actions/index.dart';
 import '/flutter_flow/custom_functions.dart';
 
-import '/custom_code/actions/index.dart' as myActions;
-import '/backend/api_requests/api_calls.dart';
 import 'dart:convert';
+import '/backend/api_requests/api_calls.dart';
+import '/custom_code/actions/index.dart' as myActions;
 
 Future<String?> loadMoreVideosForChannel(String channelId) async {
   debugPrint('\n=== [Debug] loadMoreVideosForChannel START ===');
   debugPrint('channelId => $channelId');
 
-  // 1) check
+  // 1) checks
   if (channelId.isEmpty) {
     return 'channelId empty';
   }
@@ -41,26 +40,26 @@ Future<String?> loadMoreVideosForChannel(String channelId) async {
     uploadsPlaylistId: upId,
     token: token,
   );
-  if (listRes == null || !listRes.succeeded) {
+  if (listRes == null || !(listRes.succeeded)) {
     return 'API fail.';
   }
-  final newBody = listRes.jsonBody;
-  if (newBody == null) {
-    return 'No data';
+  final body = listRes.jsonBody;
+  if (body == null) {
+    return 'No data.';
   }
 
-  // parse items
-  final newItems = getJsonField(newBody, r'$.items').toList();
-  final newToken = getJsonField(newBody, r'$.nextPageToken').toString();
+  // parse new items
+  final newItems = getJsonField(body, r'$.items').toList();
+  final newToken = getJsonField(body, r'$.nextPageToken').toString();
 
-  // 3) append to FFAppState().test
+  // 3) append
   final oldList = FFAppState().test;
   oldList.addAll(newItems);
   FFAppState().test = oldList;
 
-  FFAppState().nextPageToken = newToken.isEmpty ? '' : newToken;
+  FFAppState().nextPageToken = (newToken.isEmpty) ? '' : newToken;
 
-  // 4) read old JSON => merge => store
+  // 4) merge JSON => store
   String oldRaw = FFAppState().videoListJson;
   if (oldRaw.isEmpty) {
     oldRaw = '{}';
@@ -71,20 +70,25 @@ Future<String?> loadMoreVideosForChannel(String channelId) async {
   } catch (e) {
     oldJson = <String, dynamic>{};
   }
-  // if mismatch => reset
+
+  // mismatch => reset if needed
   final storedCh = (oldJson["channelId"] ?? '') as String;
   if (storedCh.isNotEmpty && storedCh != channelId) {
     oldJson = <String, dynamic>{};
   }
 
   // combine
-  oldJson["items"] = FFAppState().test;
-  oldJson["nextPageToken"] = newToken;
   oldJson["channelId"] = channelId;
+  oldJson["uploadsPlaylistId"] = upId; // ← keep track in JSON
+  oldJson["nextPageToken"] = FFAppState().nextPageToken;
+  oldJson["items"] = FFAppState().test;
 
-  final mergedStr = jsonEncode(oldJson);
-  await myActions.storeVideoListJsonSafely(mergedStr, channelId);
-  FFAppState().videoListJson = mergedStr;
+  final merged = jsonEncode(oldJson);
+  await myActions.storeVideoListJsonSafely(merged, channelId);
+  FFAppState().videoListJson = merged;
+
+  // update timestamp => fresh
+  await myActions.updateChannelTimestamp(channelId);
 
   debugPrint('=== [Debug] loadMoreVideosForChannel DONE ===');
   return null;

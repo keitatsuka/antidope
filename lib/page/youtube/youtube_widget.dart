@@ -36,6 +36,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
     // On page load action.
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       FFAppState().isLoading = true;
+      FFAppState().searchActive = false;
       safeSetState(() {});
       _model.newList = await actions.fetchChannelsListFromHiveAsJson();
       FFAppState().channelsList = _model.newList!.toList().cast<dynamic>();
@@ -298,6 +299,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                               _model.allBookmarksIcon!
                                                   .toList()
                                                   .cast<dynamic>();
+                                          FFAppState().searchActive = false;
                                           safeSetState(() {});
                                           if (FFAppState()
                                                   .myBookmarksJsonList.isNotEmpty) {
@@ -462,6 +464,9 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                         _model.textController
                                                             ?.clear();
                                                       });
+                                                      FFAppState()
+                                                          .searchActive = false;
+                                                      safeSetState(() {});
 
                                                       safeSetState(() {});
                                                     },
@@ -1130,7 +1135,9 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                 );
                               },
                             ),
-                            if (FFAppState().nextPageToken != '')
+                            if ((FFAppState().nextPageToken != '') &&
+                                (FFAppState().showBookmarkMode == false) &&
+                                (FFAppState().searchActive == false))
                               Container(
                                 width: MediaQuery.sizeOf(context).width * 1.0,
                                 height: 50.0,

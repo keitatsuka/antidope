@@ -7,12 +7,16 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-// isChannelCacheValid.dart
 import '/custom_code/actions/index.dart';
 import '/flutter_flow/custom_functions.dart';
 
 import 'dart:convert';
 import 'package:hive/hive.dart';
+
+/*
+  Action: isChannelCacheValid
+  Purpose: Check if the channel's lastFetch timestamp is within the expiryMs (default 24h).
+*/
 
 Future<bool> isChannelCacheValid(
   String channelId,

@@ -253,6 +253,12 @@ class FFAppState extends ChangeNotifier {
     _uploadsPlaylistId = value;
   }
 
+  bool _searchActive = false;
+  bool get searchActive => _searchActive;
+  set searchActive(bool value) {
+    _searchActive = value;
+  }
+
   final _youtubequeryManager = FutureRequestManager<ApiCallResponse>();
   Future<ApiCallResponse> youtubequery({
     String? uniqueQueryKey,
