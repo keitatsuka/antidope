@@ -7,9 +7,9 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
-import '/custom_code/actions/index.dart'; // Import other custom actions
-import '/flutter_flow/custom_functions.dart'; // Import custom functions
+// storeVideoListJsonSafely.dart (修正後)
 
+import 'dart:convert';
 import 'package:hive/hive.dart';
 
 Future<String?> storeVideoListJsonSafely(
@@ -18,6 +18,7 @@ Future<String?> storeVideoListJsonSafely(
 ) async {
   if (responseBody == null || channelId == null) return null;
 
+  // responseBodyが既に文字列のJSONかどうかチェック
   String rawJsonString;
   if (responseBody is String) {
     rawJsonString = responseBody;
@@ -25,14 +26,35 @@ Future<String?> storeVideoListJsonSafely(
     rawJsonString = jsonEncode(responseBody);
   }
 
-  if (rawJsonString.isNotEmpty) {
-    // channelsBoxを使って保存
-    var box = Hive.box('channelsBox');
-    await box.put('videoList_$channelId', rawJsonString);
-    return rawJsonString;
+  if (rawJsonString.isEmpty) {
+    return null;
   }
-  return null;
-}
 
-// Set your action name, define your arguments and return parameter,
-// and then add the boilerplate code using the green button on the right!
+  try {
+    // 【ADDED】JSON内部に channelId を埋め込みたい場合
+    // 1) decode
+    Map<String, dynamic> parsed;
+    try {
+      parsed = jsonDecode(rawJsonString) as Map<String, dynamic>;
+    } catch (e) {
+      // パース失敗時 => そのまま保存も可能だが、衝突回避したいなら return
+      debugPrint('[Debug] storeVideoListJsonSafely parse error => $e');
+      return null;
+    }
+
+    // 2) channelIdを記録 (すでにあるなら上書きOK)
+    parsed["channelId"] = channelId;
+
+    // 3) 再encode
+    final merged = jsonEncode(parsed);
+
+    // 【CHANGED】channelsBoxを開き、'videoList_$channelId' へput
+    final box = Hive.box('channelsBox');
+    await box.put('videoList_$channelId', merged);
+
+    return merged;
+  } catch (e) {
+    debugPrint('[Debug] storeVideoListJsonSafely error => $e');
+    return null;
+  }
+}

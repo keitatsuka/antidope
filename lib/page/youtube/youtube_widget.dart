@@ -835,8 +835,6 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                 final items = (FFAppState().showBookmarkMode
                                         ? FFAppState().myBookmarksJsonList
                                         : FFAppState().test)
-                                    .toList()
-                                    .take(100)
                                     .toList();
 
                                 return ListView.builder(
@@ -1146,6 +1144,9 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                     await actions.loadMoreVideosForChannel(
                                       FFAppState().ChannelId,
                                     );
+                                    FFAppState().ChannelId =
+                                        FFAppState().ChannelId;
+                                    safeSetState(() {});
                                   },
                                   text: 'もっと見る',
                                   options: FFButtonOptions(
@@ -1155,17 +1156,23 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                     iconPadding: const EdgeInsetsDirectional.fromSTEB(
                                         0.0, 0.0, 0.0, 0.0),
                                     color: FlutterFlowTheme.of(context)
-                                        .secondaryText,
+                                        .secondaryBackground,
                                     textStyle: FlutterFlowTheme.of(context)
                                         .titleSmall
                                         .override(
                                           fontFamily: 'Inter',
-                                          color: Colors.white,
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryText,
                                           fontSize: 12.0,
                                           letterSpacing: 0.0,
                                         ),
                                     elevation: 0.0,
-                                    borderRadius: BorderRadius.circular(8.0),
+                                    borderSide: BorderSide(
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryText,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(5.0),
                                   ),
                                 ),
                               ),

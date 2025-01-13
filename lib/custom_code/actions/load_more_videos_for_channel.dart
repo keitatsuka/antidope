@@ -7,71 +7,85 @@ import 'package:flutter/material.dart';
 // Begin custom action code
 // DO NOT REMOVE OR MODIFY THE CODE ABOVE!
 
+// load_more_videos_for_channel.dart
 import '/custom_code/actions/index.dart';
 import '/flutter_flow/custom_functions.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/hive_flutter.dart';
-import '/backend/api_requests/api_calls.dart'; // ← これで PlaylistItemsListAPICallCall を使える
+
+import '/custom_code/actions/index.dart' as myActions;
+import '/backend/api_requests/api_calls.dart';
 import 'dart:convert';
 
 Future<String?> loadMoreVideosForChannel(String channelId) async {
-  // 1) FFAppState に現在の nextPageToken があるか確認
-  final currentPageToken = FFAppState().nextPageToken;
-  if (currentPageToken == null || currentPageToken.isEmpty) {
-    // 次ページが存在しない(または取得済み) → 処理せず終了
-    return 'No more pages';
+  debugPrint('\n=== [Debug] loadMoreVideosForChannel START ===');
+  debugPrint('channelId => $channelId');
+
+  // 1) check
+  if (channelId.isEmpty) {
+    return 'channelId empty';
+  }
+  if (FFAppState().ChannelId != channelId) {
+    // mismatch => skip
+    return 'Channel changed mid-load.';
+  }
+  final token = FFAppState().nextPageToken ?? '';
+  if (token.isEmpty) {
+    return 'No more pages.';
+  }
+  final upId = FFAppState().uploadsPlaylistId ?? '';
+  if (upId.isEmpty) {
+    return 'No uploadsPlaylistId => cannot loadMore';
   }
 
-  debugPrint(
-      '=== loadMoreVideosForChannel START with nextPageToken=$currentPageToken ===');
-
-  // 2) まず channelIdから "uploadsPlaylistId" を取得済みなら使う or
-  //    既に FFAppState に保存しているなら使う
-  final uploadsId = FFAppState().uploadsPlaylistId;
-  if (uploadsId == null || uploadsId.isEmpty) {
-    return 'No uploads playlist ID found for channel=$channelId';
-  }
-
-  // 3) 追加取得のAPIコール
-  //    FlutterFlow上で "PlaylistItemsListAPICallCall" に
-  //    nextPageToken という引数が定義されている想定
-  final playlistRes = await PlaylistItemsListAPICallCall.call(
-    uploadsPlaylistId: uploadsId,
-    nextPageToken: currentPageToken, // ← 修正済み: pageToken → nextPageToken
-    maxResults: 50,
+  // 2) call
+  final listRes = await PlaylistItemsListAPICallCall.call(
+    uploadsPlaylistId: upId,
+    token: token,
   );
-  if (playlistRes == null || playlistRes.succeeded == false) {
-    return 'API call failed or returned error';
+  if (listRes == null || !listRes.succeeded) {
+    return 'API fail.';
+  }
+  final newBody = listRes.jsonBody;
+  if (newBody == null) {
+    return 'No data';
   }
 
-  // 4) JSONレスポンスを取り出す
-  final rawBody = playlistRes.jsonBody;
-  if (rawBody == null) {
-    return 'No jsonBody found';
-  }
+  // parse items
+  final newItems = getJsonField(newBody, r'$.items').toList();
+  final newToken = getJsonField(newBody, r'$.nextPageToken').toString();
 
-  // 5) newItems を抽出（"items" 配列）
-  final newItems = getJsonField(rawBody, r'$.items').toList();
-  debugPrint('New items => $newItems');
-
-  // 6) nextPageToken を取得
-  final newPageToken = getJsonField(rawBody, r'$.nextPageToken').toString();
-  debugPrint('New nextPageToken => $newPageToken');
-
-  // 7) 既存の "test" リストに追加する
+  // 3) append to FFAppState().test
   final oldList = FFAppState().test;
-  if (oldList is List) {
-    oldList.addAll(newItems);
-    FFAppState().test = oldList;
+  oldList.addAll(newItems);
+  FFAppState().test = oldList;
+
+  FFAppState().nextPageToken = newToken.isEmpty ? '' : newToken;
+
+  // 4) read old JSON => merge => store
+  String oldRaw = FFAppState().videoListJson;
+  if (oldRaw.isEmpty) {
+    oldRaw = '{}';
+  }
+  Map<String, dynamic> oldJson;
+  try {
+    oldJson = jsonDecode(oldRaw) as Map<String, dynamic>;
+  } catch (e) {
+    oldJson = <String, dynamic>{};
+  }
+  // if mismatch => reset
+  final storedCh = (oldJson["channelId"] ?? '') as String;
+  if (storedCh.isNotEmpty && storedCh != channelId) {
+    oldJson = <String, dynamic>{};
   }
 
-  // 8) nextPageToken 更新（無い場合は空に）
-  if (newPageToken.isEmpty) {
-    FFAppState().nextPageToken = '';
-  } else {
-    FFAppState().nextPageToken = newPageToken;
-  }
+  // combine
+  oldJson["items"] = FFAppState().test;
+  oldJson["nextPageToken"] = newToken;
+  oldJson["channelId"] = channelId;
 
-  debugPrint('=== loadMoreVideosForChannel DONE ===');
+  final mergedStr = jsonEncode(oldJson);
+  await myActions.storeVideoListJsonSafely(mergedStr, channelId);
+  FFAppState().videoListJson = mergedStr;
+
+  debugPrint('=== [Debug] loadMoreVideosForChannel DONE ===');
   return null;
 }
