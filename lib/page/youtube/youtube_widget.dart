@@ -765,11 +765,9 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                   ],
                                                 ),
                                               ),
-                                              if (getJsonField(
-                                                    FFAppState().selectedItem,
-                                                    r'''$.snippet.title''',
-                                                  ) !=
-                                                  null)
+                                              if (FFAppState()
+                                                          .selectedVideoId !=
+                                                      '')
                                                 ToggleIcon(
                                                   onPressed: () async {
                                                     safeSetState(

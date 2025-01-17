@@ -41,3 +41,4 @@ export 'load_channel_data.dart' show loadChannelData;
 export 'perform_local_search.dart' show performLocalSearch;
 export 'register_you_tube_channel.dart' show registerYouTubeChannel;
 export 'load_more_videos_for_channel.dart' show loadMoreVideosForChannel;
+export 'load_single_tweet_embed.dart' show loadSingleTweetEmbed;

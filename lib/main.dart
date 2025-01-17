@@ -114,7 +114,6 @@ class _NavBarPageState extends State<NavBarPage> {
     final tabs = {
       'Home': const HomeWidget(),
       'Youtube': const YoutubeWidget(),
-      'Twitter': const TwitterWidget(),
       'Setting': const SettingWidget(),
     };
     final currentIndex = tabs.keys.toList().indexOf(_currentPageName);
@@ -145,14 +144,6 @@ class _NavBarPageState extends State<NavBarPage> {
           BottomNavigationBarItem(
             icon: Icon(
               Icons.play_circle,
-              size: 24.0,
-            ),
-            label: 'Home',
-            tooltip: '',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(
-              Icons.close,
               size: 24.0,
             ),
             label: 'Home',

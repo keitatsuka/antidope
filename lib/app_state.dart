@@ -259,6 +259,12 @@ class FFAppState extends ChangeNotifier {
     _searchActive = value;
   }
 
+  String _xSingleTweetHtml = '';
+  String get xSingleTweetHtml => _xSingleTweetHtml;
+  set xSingleTweetHtml(String value) {
+    _xSingleTweetHtml = value;
+  }
+
   final _youtubequeryManager = FutureRequestManager<ApiCallResponse>();
   Future<ApiCallResponse> youtubequery({
     String? uniqueQueryKey,

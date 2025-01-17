@@ -84,13 +84,6 @@ GoRouter createRouter(AppStateNotifier appStateNotifier) => GoRouter(
           builder: (context, params) => params.isEmpty
               ? const NavBarPage(initialPage: 'Setting')
               : const SettingWidget(),
-        ),
-        FFRoute(
-          name: 'Twitter',
-          path: '/twitter',
-          builder: (context, params) => params.isEmpty
-              ? const NavBarPage(initialPage: 'Twitter')
-              : const TwitterWidget(),
         )
       ].map((r) => r.toRoute(appStateNotifier)).toList(),
     );
