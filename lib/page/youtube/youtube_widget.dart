@@ -794,12 +794,47 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                             .selectedVideoId,
                                                       );
                                                     } else {
-                                                      await actions
-                                                          .createBookmark(
+                                                      _model.hasSnippet =
+                                                          actions
+                                                              .hasSnippetFields(
                                                         FFAppState()
                                                             .selectedItem,
                                                       );
+                                                      if (_model.hasSnippet ==
+                                                          true) {
+                                                        await actions
+                                                            .createBookmark(
+                                                          FFAppState()
+                                                              .selectedItem,
+                                                        );
+                                                      } else {
+                                                        _model.apiResult44i =
+                                                            await VideosListAPICallCall
+                                                                .call(
+                                                          id: FFAppState()
+                                                              .selectedVideoId,
+                                                        );
+
+                                                        if ((_model.apiResult44i
+                                                                ?.succeeded ??
+                                                            true)) {
+                                                          await actions
+                                                              .createBookmark(
+                                                            (_model.apiResult44i
+                                                                    ?.jsonBody ??
+                                                                ''),
+                                                          );
+                                                        } else {
+                                                          FFAppState()
+                                                              .removeFromBookmarkedVideoIds(
+                                                                  FFAppState()
+                                                                      .selectedVideoId);
+                                                          safeSetState(() {});
+                                                        }
+                                                      }
                                                     }
+
+                                                    safeSetState(() {});
                                                   },
                                                   value: FFAppState()
                                                       .bookmarkedVideoIds
