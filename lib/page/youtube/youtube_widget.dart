@@ -144,231 +144,239 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
                             children: [
-                              Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsetsDirectional.fromSTEB(
-                                          10.0, 0.0, 0.0, 0.0),
-                                      child: SizedBox(
-                                        width: 180.0,
-                                        child: TextFormField(
-                                          controller: _model.textController,
-                                          focusNode: _model.textFieldFocusNode,
-                                          onChanged: (_) =>
-                                              EasyDebounce.debounce(
-                                            '_model.textController',
-                                            const Duration(milliseconds: 2000),
-                                            () => safeSetState(() {}),
+                              Padding(
+                                padding: const EdgeInsetsDirectional.fromSTEB(
+                                    0.0, 30.0, 0.0, 0.0),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                            10.0, 0.0, 0.0, 0.0),
+                                        child: SizedBox(
+                                          width: 180.0,
+                                          child: TextFormField(
+                                            controller: _model.textController,
+                                            focusNode:
+                                                _model.textFieldFocusNode,
+                                            onChanged: (_) =>
+                                                EasyDebounce.debounce(
+                                              '_model.textController',
+                                              const Duration(milliseconds: 2000),
+                                              () => safeSetState(() {}),
+                                            ),
+                                            autofocus: false,
+                                            obscureText: false,
+                                            decoration: InputDecoration(
+                                              isDense: true,
+                                              labelStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .labelMedium
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        fontSize: 14.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                              hintText:
+                                                  '動画URL(全て) / キーワード(チャンネル内)',
+                                              hintStyle:
+                                                  FlutterFlowTheme.of(context)
+                                                      .labelMedium
+                                                      .override(
+                                                        fontFamily: 'Inter',
+                                                        fontSize: 12.0,
+                                                        letterSpacing: 0.0,
+                                                      ),
+                                              enabledBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .alternate,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              focusedBorder: OutlineInputBorder(
+                                                borderSide: const BorderSide(
+                                                  color: Color(0x00000000),
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              errorBorder: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .error,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              focusedErrorBorder:
+                                                  OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: FlutterFlowTheme.of(
+                                                          context)
+                                                      .error,
+                                                  width: 1.0,
+                                                ),
+                                                borderRadius:
+                                                    BorderRadius.circular(8.0),
+                                              ),
+                                              filled: true,
+                                              fillColor:
+                                                  FlutterFlowTheme.of(context)
+                                                      .secondaryBackground,
+                                              suffixIcon: _model.textController!
+                                                      .text.isNotEmpty
+                                                  ? InkWell(
+                                                      onTap: () async {
+                                                        _model.textController
+                                                            ?.clear();
+                                                        safeSetState(() {});
+                                                      },
+                                                      child: const Icon(
+                                                        Icons.clear,
+                                                        size: 22,
+                                                      ),
+                                                    )
+                                                  : null,
+                                            ),
+                                            style: FlutterFlowTheme.of(context)
+                                                .bodyMedium
+                                                .override(
+                                                  fontFamily: 'Inter',
+                                                  letterSpacing: 0.0,
+                                                ),
+                                            cursorColor:
+                                                FlutterFlowTheme.of(context)
+                                                    .primaryText,
+                                            validator: _model
+                                                .textControllerValidator
+                                                .asValidator(context),
                                           ),
-                                          autofocus: false,
-                                          obscureText: false,
-                                          decoration: InputDecoration(
-                                            isDense: true,
-                                            labelStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .override(
-                                                      fontFamily: 'Inter',
-                                                      fontSize: 14.0,
-                                                      letterSpacing: 0.0,
-                                                    ),
-                                            hintText:
-                                                '動画URL(全範囲) / キーワード(Channel内)',
-                                            hintStyle:
-                                                FlutterFlowTheme.of(context)
-                                                    .labelMedium
-                                                    .override(
-                                                      fontFamily: 'Inter',
-                                                      fontSize: 12.0,
-                                                      letterSpacing: 0.0,
-                                                    ),
-                                            enabledBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .alternate,
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            focusedBorder: OutlineInputBorder(
-                                              borderSide: const BorderSide(
-                                                color: Color(0x00000000),
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            errorBorder: OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            focusedErrorBorder:
-                                                OutlineInputBorder(
-                                              borderSide: BorderSide(
-                                                color:
-                                                    FlutterFlowTheme.of(context)
-                                                        .error,
-                                                width: 1.0,
-                                              ),
-                                              borderRadius:
-                                                  BorderRadius.circular(8.0),
-                                            ),
-                                            filled: true,
-                                            fillColor:
-                                                FlutterFlowTheme.of(context)
-                                                    .secondaryBackground,
-                                            suffixIcon: _model.textController!
-                                                    .text.isNotEmpty
-                                                ? InkWell(
-                                                    onTap: () async {
-                                                      _model.textController
-                                                          ?.clear();
-                                                      safeSetState(() {});
-                                                    },
-                                                    child: const Icon(
-                                                      Icons.clear,
-                                                      size: 22,
-                                                    ),
-                                                  )
-                                                : null,
-                                          ),
-                                          style: FlutterFlowTheme.of(context)
-                                              .bodyMedium
-                                              .override(
-                                                fontFamily: 'Inter',
-                                                letterSpacing: 0.0,
-                                              ),
-                                          cursorColor:
-                                              FlutterFlowTheme.of(context)
-                                                  .primaryText,
-                                          validator: _model
-                                              .textControllerValidator
-                                              .asValidator(context),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        5.0, 0.0, 0.0, 0.0),
-                                    child: FlutterFlowIconButton(
-                                      borderColor: Colors.transparent,
-                                      borderRadius: 8.0,
-                                      buttonSize: 40.0,
-                                      icon: Icon(
-                                        Icons.search_sharp,
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryText,
-                                        size: 26.0,
-                                      ),
-                                      onPressed: () async {
-                                        _model.searchResult =
-                                            await actions.performLocalSearch(
-                                          _model.textController.text,
-                                        );
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          5.0, 0.0, 0.0, 0.0),
+                                      child: FlutterFlowIconButton(
+                                        borderColor: Colors.transparent,
+                                        borderRadius: 8.0,
+                                        buttonSize: 40.0,
+                                        icon: Icon(
+                                          Icons.search_sharp,
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryText,
+                                          size: 26.0,
+                                        ),
+                                        onPressed: () async {
+                                          _model.searchResult =
+                                              await actions.performLocalSearch(
+                                            _model.textController.text,
+                                          );
 
-                                        safeSetState(() {});
-                                      },
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsetsDirectional.fromSTEB(
-                                        5.0, 0.0, 5.0, 0.0),
-                                    child: ToggleIcon(
-                                      onPressed: () async {
-                                        safeSetState(() =>
-                                            FFAppState().showBookmarkMode =
-                                                !FFAppState().showBookmarkMode);
-                                        if (FFAppState().showBookmarkMode ==
-                                            true) {
-                                          _model.allBookmarksIcon =
-                                              await actions.fetchAllBookmarks();
-                                          FFAppState().myBookmarksJsonList =
-                                              _model.allBookmarksIcon!
-                                                  .toList()
-                                                  .cast<dynamic>();
-                                          FFAppState().searchActive = false;
                                           safeSetState(() {});
-                                          if (FFAppState()
-                                                  .myBookmarksJsonList.isNotEmpty) {
-                                            FFAppState().selectedVideoId =
-                                                getJsonField(
-                                              FFAppState()
-                                                  .myBookmarksJsonList
-                                                  .firstOrNull,
-                                              r'''$.snippet.resourceId.videoId''',
-                                            ).toString();
+                                        },
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          5.0, 0.0, 5.0, 0.0),
+                                      child: ToggleIcon(
+                                        onPressed: () async {
+                                          safeSetState(() => FFAppState()
+                                                  .showBookmarkMode =
+                                              !FFAppState().showBookmarkMode);
+                                          if (FFAppState().showBookmarkMode ==
+                                              true) {
+                                            _model.allBookmarksIcon =
+                                                await actions
+                                                    .fetchAllBookmarks();
+                                            FFAppState().myBookmarksJsonList =
+                                                _model.allBookmarksIcon!
+                                                    .toList()
+                                                    .cast<dynamic>();
+                                            FFAppState().searchActive = false;
                                             safeSetState(() {});
-                                            FFAppState().HTMLForWebView =
-                                                '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
-                                            safeSetState(() {});
-                                            FFAppState().selectedItem =
+                                            if (FFAppState()
+                                                    .myBookmarksJsonList.isNotEmpty) {
+                                              FFAppState().selectedVideoId =
+                                                  getJsonField(
                                                 FFAppState()
                                                     .myBookmarksJsonList
-                                                    .firstOrNull!;
-                                            safeSetState(() {});
-                                            _model.foundIconUrl = await actions
-                                                .findIconUrlByChannelId(
+                                                    .firstOrNull,
+                                                r'''$.snippet.resourceId.videoId''',
+                                              ).toString();
+                                              safeSetState(() {});
+                                              FFAppState().HTMLForWebView =
+                                                  '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
+                                              safeSetState(() {});
+                                              FFAppState().selectedItem =
+                                                  FFAppState()
+                                                      .myBookmarksJsonList
+                                                      .firstOrNull!;
+                                              safeSetState(() {});
+                                              _model.foundIconUrl =
+                                                  await actions
+                                                      .findIconUrlByChannelId(
+                                                getJsonField(
+                                                  FFAppState().selectedItem,
+                                                  r'''$.snippet.channelId''',
+                                                ).toString(),
+                                              );
+                                              FFAppState().selectedIconUrl =
+                                                  _model.foundIconUrl!;
+                                              safeSetState(() {});
+                                            } else {
+                                              FFAppState().selectedVideoId = '';
+                                              FFAppState().selectedItem = null;
+                                              FFAppState().selectedIconUrl =
+                                                  null;
+                                              FFAppState().HTMLForWebView = '';
+                                              safeSetState(() {});
+                                            }
+                                          } else {
+                                            await actions.loadChannelData(
                                               getJsonField(
-                                                FFAppState().selectedItem,
-                                                r'''$.snippet.channelId''',
+                                                FFAppState()
+                                                    .channelsList
+                                                    .firstOrNull,
+                                                r'''$.channelId''',
                                               ).toString(),
                                             );
-                                            FFAppState().selectedIconUrl =
-                                                _model.foundIconUrl!;
-                                            safeSetState(() {});
-                                          } else {
-                                            FFAppState().selectedVideoId = '';
-                                            FFAppState().selectedItem = null;
-                                            FFAppState().selectedIconUrl = null;
-                                            FFAppState().HTMLForWebView = '';
-                                            safeSetState(() {});
                                           }
-                                        } else {
-                                          await actions.loadChannelData(
-                                            getJsonField(
-                                              FFAppState()
-                                                  .channelsList
-                                                  .firstOrNull,
-                                              r'''$.channelId''',
-                                            ).toString(),
-                                          );
-                                        }
 
-                                        safeSetState(() {
-                                          _model.textController?.clear();
-                                        });
+                                          safeSetState(() {
+                                            _model.textController?.clear();
+                                          });
 
-                                        safeSetState(() {});
-                                      },
-                                      value: FFAppState().showBookmarkMode,
-                                      onIcon: Icon(
-                                        Icons.bookmark_sharp,
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryText,
-                                        size: 26.0,
-                                      ),
-                                      offIcon: Icon(
-                                        Icons.bookmark_border_sharp,
-                                        color: FlutterFlowTheme.of(context)
-                                            .primaryText,
-                                        size: 24.0,
+                                          safeSetState(() {});
+                                        },
+                                        value: FFAppState().showBookmarkMode,
+                                        onIcon: Icon(
+                                          Icons.bookmark_sharp,
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryText,
+                                          size: 26.0,
+                                        ),
+                                        offIcon: Icon(
+                                          Icons.bookmark_border_sharp,
+                                          color: FlutterFlowTheme.of(context)
+                                              .primaryText,
+                                          size: 24.0,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                               Container(
                                 width: MediaQuery.sizeOf(context).width * 1.0,
@@ -410,80 +418,129 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                   padding: const EdgeInsetsDirectional
                                                       .fromSTEB(
                                                           0.0, 8.0, 0.0, 0.0),
-                                                  child: InkWell(
-                                                    splashColor:
-                                                        Colors.transparent,
-                                                    focusColor:
-                                                        Colors.transparent,
-                                                    hoverColor:
-                                                        Colors.transparent,
-                                                    highlightColor:
-                                                        Colors.transparent,
-                                                    onTap: () async {
-                                                      if (FFAppState()
-                                                              .showBookmarkMode ==
-                                                          true) {
-                                                        FFAppState()
-                                                                .showBookmarkMode =
-                                                            false;
-                                                        safeSetState(() {});
-                                                        FFAppState().ChannelId =
-                                                            getJsonField(
-                                                          channelsIconItem,
-                                                          r'''$.channelId''',
-                                                        ).toString();
-                                                        safeSetState(() {});
-                                                        await actions
-                                                            .loadChannelData(
-                                                          FFAppState()
-                                                              .ChannelId,
-                                                        );
-                                                      } else {
-                                                        _model.tappedChannelId =
-                                                            actions
-                                                                .safeToStringValue(
-                                                          getJsonField(
-                                                            channelsIconItem,
-                                                            r'''$.channelId''',
-                                                          ),
-                                                        );
-                                                        FFAppState().ChannelId =
-                                                            getJsonField(
-                                                          channelsIconItem,
-                                                          r'''$.channelId''',
-                                                        ).toString();
-                                                        safeSetState(() {});
-                                                        await actions
-                                                            .loadChannelData(
-                                                          FFAppState()
-                                                              .ChannelId,
-                                                        );
-                                                      }
-
-                                                      safeSetState(() {
-                                                        _model.textController
-                                                            ?.clear();
-                                                      });
-                                                      FFAppState()
-                                                          .searchActive = false;
-                                                      safeSetState(() {});
-
-                                                      safeSetState(() {});
-                                                    },
-                                                    child: Container(
-                                                      width: 50.0,
-                                                      height: 50.0,
-                                                      clipBehavior:
-                                                          Clip.antiAlias,
-                                                      decoration: const BoxDecoration(
-                                                        shape: BoxShape.circle,
+                                                  child: Container(
+                                                    width: 52.0,
+                                                    height: 52.0,
+                                                    decoration: BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                      border: Border.all(
+                                                        color: FFAppState()
+                                                                    .ChannelId ==
+                                                                getJsonField(
+                                                                  channelsIconItem,
+                                                                  r'''$.channelId''',
+                                                                ).toString()
+                                                            ? FlutterFlowTheme
+                                                                    .of(context)
+                                                                .primary
+                                                            : FlutterFlowTheme
+                                                                    .of(context)
+                                                                .secondaryBackground,
+                                                        width: FFAppState()
+                                                                    .ChannelId ==
+                                                                getJsonField(
+                                                                  channelsIconItem,
+                                                                  r'''$.channelId''',
+                                                                ).toString()
+                                                            ? 2.0
+                                                            : 0.0,
                                                       ),
-                                                      child: Image.network(
-                                                        getJsonField(
-                                                          channelsIconItem,
-                                                          r'''$.iconUrl''',
-                                                        ).toString(),
-                                                        fit: BoxFit.cover,
+                                                    ),
+                                                    child: Align(
+                                                      alignment:
+                                                          const AlignmentDirectional(
+                                                              0.0, 0.0),
+                                                      child: InkWell(
+                                                        splashColor:
+                                                            Colors.transparent,
+                                                        focusColor:
+                                                            Colors.transparent,
+                                                        hoverColor:
+                                                            Colors.transparent,
+                                                        highlightColor:
+                                                            Colors.transparent,
+                                                        onTap: () async {
+                                                          if (FFAppState()
+                                                                  .showBookmarkMode ==
+                                                              true) {
+                                                            FFAppState()
+                                                                    .showBookmarkMode =
+                                                                false;
+                                                            safeSetState(() {});
+                                                            FFAppState()
+                                                                    .ChannelId =
+                                                                getJsonField(
+                                                              channelsIconItem,
+                                                              r'''$.channelId''',
+                                                            ).toString();
+                                                            safeSetState(() {});
+                                                            await actions
+                                                                .loadChannelData(
+                                                              FFAppState()
+                                                                  .ChannelId,
+                                                            );
+                                                          } else {
+                                                            _model.tappedChannelId =
+                                                                actions
+                                                                    .safeToStringValue(
+                                                              getJsonField(
+                                                                channelsIconItem,
+                                                                r'''$.channelId''',
+                                                              ),
+                                                            );
+                                                            FFAppState()
+                                                                    .ChannelId =
+                                                                getJsonField(
+                                                              channelsIconItem,
+                                                              r'''$.channelId''',
+                                                            ).toString();
+                                                            safeSetState(() {});
+                                                            await actions
+                                                                .loadChannelData(
+                                                              FFAppState()
+                                                                  .ChannelId,
+                                                            );
+                                                          }
+
+                                                          safeSetState(() {
+                                                            _model
+                                                                .textController
+                                                                ?.clear();
+                                                          });
+                                                          FFAppState()
+                                                                  .searchActive =
+                                                              false;
+                                                          safeSetState(() {});
+                                                          await _model
+                                                              .columnController
+                                                              ?.animateTo(
+                                                            0,
+                                                            duration: const Duration(
+                                                                milliseconds:
+                                                                    100),
+                                                            curve: Curves.ease,
+                                                          );
+
+                                                          safeSetState(() {});
+                                                        },
+                                                        child: Container(
+                                                          width: 50.0,
+                                                          height: 50.0,
+                                                          clipBehavior:
+                                                              Clip.antiAlias,
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                            shape:
+                                                                BoxShape.circle,
+                                                          ),
+                                                          child: Image.network(
+                                                            getJsonField(
+                                                              channelsIconItem,
+                                                              r'''$.iconUrl''',
+                                                            ).toString(),
+                                                            fit: BoxFit.cover,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -808,23 +865,20 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                               .selectedItem,
                                                         );
                                                       } else {
-                                                        _model.apiResult44i =
-                                                            await VideosListAPICallCall
-                                                                .call(
-                                                          id: FFAppState()
+                                                        _model.fethedvideodata =
+                                                            await actions
+                                                                .fetchVideoDataAndCreateBookmark(
+                                                          FFAppState()
                                                               .selectedVideoId,
                                                         );
-
-                                                        if ((_model.apiResult44i
-                                                                ?.succeeded ??
-                                                            true)) {
+                                                        if (_model
+                                                                .fethedvideodata !=
+                                                            true) {
                                                           await actions
-                                                              .createBookmark(
-                                                            (_model.apiResult44i
-                                                                    ?.jsonBody ??
-                                                                ''),
+                                                              .removeBookmark(
+                                                            FFAppState()
+                                                                .selectedVideoId,
                                                           );
-                                                        } else {
                                                           FFAppState()
                                                               .removeFromBookmarkedVideoIds(
                                                                   FFAppState()

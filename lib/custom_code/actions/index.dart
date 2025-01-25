@@ -43,3 +43,9 @@ export 'register_you_tube_channel.dart' show registerYouTubeChannel;
 export 'load_more_videos_for_channel.dart' show loadMoreVideosForChannel;
 export 'load_single_tweet_embed.dart' show loadSingleTweetEmbed;
 export 'has_snippet_fields.dart' show hasSnippetFields;
+export 'fetch_video_data_and_create_bookmark.dart'
+    show fetchVideoDataAndCreateBookmark;
+export 'save_pass_code.dart' show savePassCode;
+export 'check_pass_code.dart' show checkPassCode;
+export 'is_pass_configured.dart' show isPassConfigured;
+export 'disable_pass_code.dart' show disablePassCode;

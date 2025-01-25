@@ -265,6 +265,24 @@ class FFAppState extends ChangeNotifier {
     _xSingleTweetHtml = value;
   }
 
+  String _announcedTitle = '';
+  String get announcedTitle => _announcedTitle;
+  set announcedTitle(String value) {
+    _announcedTitle = value;
+  }
+
+  String _announcedMessage = '';
+  String get announcedMessage => _announcedMessage;
+  set announcedMessage(String value) {
+    _announcedMessage = value;
+  }
+
+  String _announcedDate = '';
+  String get announcedDate => _announcedDate;
+  set announcedDate(String value) {
+    _announcedDate = value;
+  }
+
   final _youtubequeryManager = FutureRequestManager<ApiCallResponse>();
   Future<ApiCallResponse> youtubequery({
     String? uniqueQueryKey,

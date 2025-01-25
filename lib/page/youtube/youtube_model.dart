@@ -1,4 +1,3 @@
-import '/backend/api_requests/api_calls.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'youtube_widget.dart' show YoutubeWidget;
 import 'package:flutter/material.dart';
@@ -26,8 +25,8 @@ class YoutubeModel extends FlutterFlowModel<YoutubeWidget> {
   String? tappedChannelId;
   // Stores action output result for [Custom Action - hasSnippetFields] action in ToggleIcon widget.
   bool? hasSnippet;
-  // Stores action output result for [Backend Call - API (VideosListAPICall)] action in ToggleIcon widget.
-  ApiCallResponse? apiResult44i;
+  // Stores action output result for [Custom Action - fetchVideoDataAndCreateBookmark] action in ToggleIcon widget.
+  bool? fethedvideodata;
   // State field(s) for ListView widget.
   ScrollController? listViewController2;
 

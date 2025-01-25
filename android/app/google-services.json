@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "586979748032",
+    "project_id": "anti-dope-pxt9o5",
+    "storage_bucket": "anti-dope-pxt9o5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586979748032:android:c94976f3e6bb142e24e525",
+        "android_client_info": {
+          "package_name": "com.mycompany.antidope"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAW3xHh6CIizi265eLWDVmxdi7lFweAzHY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

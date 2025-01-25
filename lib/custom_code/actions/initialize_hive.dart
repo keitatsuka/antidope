@@ -1,4 +1,5 @@
 // Automatic FlutterFlow imports
+import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'index.dart'; // Imports other custom actions
@@ -19,6 +20,7 @@ Future<String?> initializeHive() async {
   await Hive.openBox('channelsBox');
   await Hive.openBox('bookmarkBox');
   await Hive.openBox('cacheBox');
+  await Hive.openBox('passCodeBox');
 // 'cacheBox' は使わないなら開かないでOK
 // どうしても別用途で使うなら openBox('cacheBox') は残してよい
 

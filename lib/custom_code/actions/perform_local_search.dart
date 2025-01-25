@@ -1,4 +1,5 @@
 // Automatic FlutterFlow imports
+import '/backend/backend.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import 'index.dart'; // Imports other custom actions
@@ -40,7 +41,7 @@ Future<String?> performLocalSearch(String query) async {
 
     // URL検索で単一表示する場合 → 検索結果一覧ではなく"単体表示"とみなす
     // よって searchActive はオフにしてしまう
-    FFAppState().searchActive = false;
+    FFAppState().searchActive = true;
 
     // 下リストを消去
     FFAppState().test = [];
