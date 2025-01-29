@@ -2,6 +2,7 @@ import '/backend/backend.dart';
 import '/componet/announcement_list/announcement_list_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
+import '/flutter_flow/flutter_flow_widgets.dart';
 import '/custom_code/actions/index.dart' as actions;
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
@@ -109,51 +110,101 @@ class _HomeWidgetState extends State<HomeWidget> {
                             mainAxisSize: MainAxisSize.max,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Align(
-                                alignment: const AlignmentDirectional(0.0, 0.0),
-                                child: Container(
-                                  width: 113.0,
-                                  height: 40.0,
-                                  decoration: BoxDecoration(
-                                    color: FlutterFlowTheme.of(context)
-                                        .secondaryBackground,
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        blurRadius: 4.0,
-                                        color: Color(0x33000000),
-                                        offset: Offset(
-                                          0.0,
-                                          2.0,
-                                        ),
-                                      )
-                                    ],
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Align(
-                                    alignment: const AlignmentDirectional(0.0, 0.0),
-                                    child: Text(
-                                      'プラン変更',
-                                      style: FlutterFlowTheme.of(context)
-                                          .bodyMedium
+                              Flexible(
+                                flex: 1,
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      0.0, 0.0, 10.0, 0.0),
+                                  child: FFButtonWidget(
+                                    onPressed: () {
+                                      print('Button pressed ...');
+                                    },
+                                    text: 'プラン\n',
+                                    icon: const Icon(
+                                      Icons.playlist_add_check_rounded,
+                                      size: 15.0,
+                                    ),
+                                    options: FFButtonOptions(
+                                      width: 100.0,
+                                      height: 35.0,
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          16.0, 0.0, 16.0, 0.0),
+                                      iconAlignment: IconAlignment.end,
+                                      iconPadding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryBackground,
+                                      textStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
                                           .override(
                                             fontFamily: 'Inter',
                                             color: FlutterFlowTheme.of(context)
                                                 .primaryText,
+                                            fontSize: 14.0,
                                             letterSpacing: 0.0,
                                           ),
+                                      elevation: 0.0,
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.0),
                                     ),
                                   ),
                                 ),
                               ),
-                              Align(
-                                alignment: const AlignmentDirectional(1.0, 0.0),
+                              Flexible(
+                                flex: 1,
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.fromSTEB(
+                                      0.0, 0.0, 10.0, 0.0),
+                                  child: FFButtonWidget(
+                                    onPressed: () {
+                                      print('Button pressed ...');
+                                    },
+                                    text: '使い方',
+                                    icon: const Icon(
+                                      Icons.question_mark,
+                                      size: 15.0,
+                                    ),
+                                    options: FFButtonOptions(
+                                      width: 100.0,
+                                      height: 35.0,
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          16.0, 0.0, 16.0, 0.0),
+                                      iconAlignment: IconAlignment.end,
+                                      iconPadding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryBackground,
+                                      textStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .override(
+                                            fontFamily: 'Inter',
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryText,
+                                            fontSize: 14.0,
+                                            letterSpacing: 0.0,
+                                          ),
+                                      elevation: 0.0,
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1.0,
+                                      ),
+                                      borderRadius: BorderRadius.circular(8.0),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Flexible(
+                                flex: 1,
                                 child: Builder(
-                                  builder: (context) => InkWell(
-                                    splashColor: Colors.transparent,
-                                    focusColor: Colors.transparent,
-                                    hoverColor: Colors.transparent,
-                                    highlightColor: Colors.transparent,
-                                    onTap: () async {
+                                  builder: (context) => FFButtonWidget(
+                                    onPressed: () async {
                                       await showDialog(
                                         context: context,
                                         builder: (dialogContext) {
@@ -181,42 +232,38 @@ class _HomeWidgetState extends State<HomeWidget> {
                                         },
                                       );
                                     },
-                                    child: Container(
-                                      height: 40.0,
-                                      decoration: BoxDecoration(
-                                        color: FlutterFlowTheme.of(context)
-                                            .secondaryBackground,
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            blurRadius: 4.0,
-                                            color: Color(0x33000000),
-                                            offset: Offset(
-                                              0.0,
-                                              2.0,
-                                            ),
-                                          )
-                                        ],
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      child: Align(
-                                        alignment:
-                                            const AlignmentDirectional(0.0, 0.0),
-                                        child: Padding(
-                                          padding:
-                                              const EdgeInsetsDirectional.fromSTEB(
-                                                  10.0, 0.0, 10.0, 0.0),
-                                          child: Text(
-                                            'お知らせ',
-                                            style: FlutterFlowTheme.of(context)
-                                                .bodyMedium
-                                                .override(
-                                                  fontFamily: 'Inter',
-                                                  letterSpacing: 0.0,
-                                                ),
+                                    text: '通知',
+                                    icon: const Icon(
+                                      Icons.notifications_none,
+                                      size: 15.0,
+                                    ),
+                                    options: FFButtonOptions(
+                                      width: 100.0,
+                                      height: 35.0,
+                                      padding: const EdgeInsetsDirectional.fromSTEB(
+                                          16.0, 0.0, 16.0, 0.0),
+                                      iconAlignment: IconAlignment.end,
+                                      iconPadding:
+                                          const EdgeInsetsDirectional.fromSTEB(
+                                              0.0, 0.0, 0.0, 0.0),
+                                      color: FlutterFlowTheme.of(context)
+                                          .secondaryBackground,
+                                      textStyle: FlutterFlowTheme.of(context)
+                                          .titleSmall
+                                          .override(
+                                            fontFamily: 'Inter',
+                                            color: FlutterFlowTheme.of(context)
+                                                .primaryText,
+                                            fontSize: 14.0,
+                                            letterSpacing: 0.0,
                                           ),
-                                        ),
+                                      elevation: 0.0,
+                                      borderSide: BorderSide(
+                                        color: FlutterFlowTheme.of(context)
+                                            .secondaryText,
+                                        width: 1.0,
                                       ),
+                                      borderRadius: BorderRadius.circular(8.0),
                                     ),
                                   ),
                                 ),
@@ -227,31 +274,53 @@ class _HomeWidgetState extends State<HomeWidget> {
                       ),
                       if (responsiveVisibility(
                         context: context,
-                        tablet: false,
                         tabletLandscape: false,
                         desktop: false,
                       ))
                         Padding(
                           padding: const EdgeInsetsDirectional.fromSTEB(
                               20.0, 0.0, 20.0, 0.0),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                            ),
-                            child: Visibility(
-                              visible: responsiveVisibility(
-                                context: context,
-                                tablet: false,
-                                tabletLandscape: false,
-                                desktop: false,
-                              ),
-                              child: ClipRRect(
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(15.0),
+                            child: Container(
+                              width: double.infinity,
+                              height: () {
+                                if (MediaQuery.sizeOf(context).width <
+                                    kBreakpointSmall) {
+                                  return 280.0;
+                                } else if (MediaQuery.sizeOf(context).width <
+                                    kBreakpointMedium) {
+                                  return 800.0;
+                                } else if (MediaQuery.sizeOf(context).width <
+                                    kBreakpointLarge) {
+                                  return 800.0;
+                                } else {
+                                  return 280.0;
+                                }
+                              }(),
+                              decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
                                 borderRadius: BorderRadius.circular(15.0),
-                                child: Image.network(
-                                  homeHomeImageRecord!.imagePath,
-                                  height: 200.0,
-                                  fit: BoxFit.cover,
+                                border: Border.all(
+                                  color: FlutterFlowTheme.of(context).alternate,
+                                  width: 1.0,
+                                ),
+                              ),
+                              child: Visibility(
+                                visible: responsiveVisibility(
+                                  context: context,
+                                  tabletLandscape: false,
+                                  desktop: false,
+                                ),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  child: Image.asset(
+                                    'assets/images/vdpi8_2.png',
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
                                 ),
                               ),
                             ),
@@ -259,7 +328,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                         ),
                       Padding(
                         padding: const EdgeInsetsDirectional.fromSTEB(
-                            20.0, 20.0, 20.0, 20.0),
+                            20.0, 20.0, 20.0, 5.0),
                         child: Container(
                           decoration: BoxDecoration(
                             color: FlutterFlowTheme.of(context)
@@ -271,7 +340,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                           ),
                           child: Padding(
                             padding: const EdgeInsetsDirectional.fromSTEB(
-                                10.0, 10.0, 10.0, 10.0),
+                                10.0, 12.0, 10.0, 12.0),
                             child: Column(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -325,8 +394,27 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   mainAxisSize: MainAxisSize.max,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
+                                    Opacity(
+                                      opacity: 0.0,
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 0.0, 5.0, 0.0),
+                                        child: Container(
+                                          width: 25.0,
+                                          height: 25.0,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Image.network(
+                                            'https://picsum.photos/seed/120/600',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: 3,
                                       child: Opacity(
                                         opacity: 0.0,
                                         child: Align(
@@ -406,8 +494,27 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 Row(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
+                                    Opacity(
+                                      opacity: 0.0,
+                                      child: Padding(
+                                        padding: const EdgeInsetsDirectional.fromSTEB(
+                                            0.0, 0.0, 5.0, 0.0),
+                                        child: Container(
+                                          width: 25.0,
+                                          height: 25.0,
+                                          clipBehavior: Clip.antiAlias,
+                                          decoration: const BoxDecoration(
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Image.network(
+                                            'https://picsum.photos/seed/120/600',
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     Expanded(
-                                      flex: 2,
+                                      flex: 3,
                                       child: Align(
                                         alignment:
                                             const AlignmentDirectional(-1.0, 0.0),
@@ -417,6 +524,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                               .bodyMedium
                                               .override(
                                                 fontFamily: 'Inter',
+                                                fontSize: 16.0,
                                                 letterSpacing: 0.0,
                                               ),
                                         ),
@@ -441,7 +549,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                               .bodyMedium
                                               .override(
                                                 fontFamily: 'Inter',
-                                                fontSize: 18.0,
+                                                fontSize: 16.0,
                                                 letterSpacing: 0.0,
                                               ),
                                         ),
@@ -466,7 +574,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                               .bodyMedium
                                               .override(
                                                 fontFamily: 'Inter',
-                                                fontSize: 18.0,
+                                                fontSize: 16.0,
                                                 letterSpacing: 0.0,
                                               ),
                                         ),
@@ -503,12 +611,33 @@ class _HomeWidgetState extends State<HomeWidget> {
                                           child: Padding(
                                             padding:
                                                 const EdgeInsetsDirectional.fromSTEB(
-                                                    0.0, 0.0, 0.0, 5.0),
+                                                    0.0, 0.0, 0.0, 15.0),
                                             child: Row(
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
+                                                Padding(
+                                                  padding: const EdgeInsetsDirectional
+                                                      .fromSTEB(
+                                                          0.0, 0.0, 5.0, 0.0),
+                                                  child: Container(
+                                                    width: 25.0,
+                                                    height: 25.0,
+                                                    clipBehavior:
+                                                        Clip.antiAlias,
+                                                    decoration: const BoxDecoration(
+                                                      shape: BoxShape.circle,
+                                                    ),
+                                                    child: Image.network(
+                                                      getJsonField(
+                                                        channelListHomeItem,
+                                                        r'''$.iconUrl''',
+                                                      ).toString(),
+                                                      fit: BoxFit.cover,
+                                                    ),
+                                                  ),
+                                                ),
                                                 Expanded(
-                                                  flex: 2,
+                                                  flex: 3,
                                                   child: Align(
                                                     alignment:
                                                         const AlignmentDirectional(
@@ -524,6 +653,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                           .bodyMedium
                                                           .override(
                                                             fontFamily: 'Inter',
+                                                            fontSize: 16.0,
                                                             letterSpacing: 0.0,
                                                           ),
                                                     ),
@@ -550,7 +680,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                           .bodyMedium
                                                           .override(
                                                             fontFamily: 'Inter',
-                                                            fontSize: 18.0,
+                                                            fontSize: 16.0,
                                                             letterSpacing: 0.0,
                                                           ),
                                                     ),
@@ -577,7 +707,7 @@ class _HomeWidgetState extends State<HomeWidget> {
                                                           .bodyMedium
                                                           .override(
                                                             fontFamily: 'Inter',
-                                                            fontSize: 18.0,
+                                                            fontSize: 16.0,
                                                             letterSpacing: 0.0,
                                                           ),
                                                     ),
@@ -592,66 +722,6 @@ class _HomeWidgetState extends State<HomeWidget> {
                                   },
                                 ),
                               ].divide(const SizedBox(height: 5.0)),
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Align(
-                          alignment: const AlignmentDirectional(0.0, 1.0),
-                          child: Padding(
-                            padding: const EdgeInsetsDirectional.fromSTEB(
-                                0.0, 0.0, 0.0, 20.0),
-                            child: Container(
-                              width: MediaQuery.sizeOf(context).width * 0.9,
-                              height: 20.0,
-                              decoration: BoxDecoration(
-                                color: FlutterFlowTheme.of(context)
-                                    .secondaryBackground,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.max,
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    'プライバシーポリシー',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          fontFamily: 'Inter',
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          fontSize: 12.0,
-                                          letterSpacing: 0.0,
-                                        ),
-                                  ),
-                                  Text(
-                                    '利用規約',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          fontFamily: 'Inter',
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          fontSize: 12.0,
-                                          letterSpacing: 0.0,
-                                        ),
-                                  ),
-                                  Text(
-                                    'YouTube利用規約',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                          fontFamily: 'Inter',
-                                          color: FlutterFlowTheme.of(context)
-                                              .secondaryText,
-                                          fontSize: 12.0,
-                                          letterSpacing: 0.0,
-                                        ),
-                                  ),
-                                ],
-                              ),
                             ),
                           ),
                         ),

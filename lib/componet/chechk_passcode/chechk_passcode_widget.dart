@@ -128,7 +128,7 @@ class _ChechkPasscodeWidgetState extends State<ChechkPasscodeWidget>
                         style: FlutterFlowTheme.of(context)
                             .headlineMedium
                             .override(
-                              fontFamily: 'Sora',
+                              fontFamily: 'Readex Pro',
                               fontSize: 24.0,
                               letterSpacing: 0.0,
                               fontWeight: FontWeight.w600,

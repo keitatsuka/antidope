@@ -419,8 +419,8 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                       .fromSTEB(
                                                           0.0, 8.0, 0.0, 0.0),
                                                   child: Container(
-                                                    width: 52.0,
-                                                    height: 52.0,
+                                                    width: 54.0,
+                                                    height: 54.0,
                                                     decoration: BoxDecoration(
                                                       shape: BoxShape.circle,
                                                       border: Border.all(
@@ -442,7 +442,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                                   channelsIconItem,
                                                                   r'''$.channelId''',
                                                                 ).toString()
-                                                            ? 2.0
+                                                            ? 4.0
                                                             : 0.0,
                                                       ),
                                                     ),
