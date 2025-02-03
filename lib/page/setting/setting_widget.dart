@@ -77,7 +77,7 @@ class _SettingWidgetState extends State<SettingWidget> {
         },
         child: Scaffold(
           key: scaffoldKey,
-          backgroundColor: FlutterFlowTheme.of(context).secondaryBackground,
+          backgroundColor: const Color(0xFFF3F3F5),
           body: SafeArea(
             top: true,
             child: Align(
@@ -96,10 +96,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                           Container(
                             width: MediaQuery.sizeOf(context).width * 0.9,
                             height: 60.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                            ),
+                            decoration: const BoxDecoration(),
                             child: Padding(
                               padding: const EdgeInsetsDirectional.fromSTEB(
                                   0.0, 0.0, 0.0, 15.0),
@@ -148,7 +145,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                           elevation: 0.0,
                                           borderSide: BorderSide(
                                             color: FlutterFlowTheme.of(context)
-                                                .secondaryText,
+                                                .primaryText,
                                             width: 1.0,
                                           ),
                                           borderRadius:
@@ -223,7 +220,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                           elevation: 0.0,
                                           borderSide: BorderSide(
                                             color: FlutterFlowTheme.of(context)
-                                                .secondaryText,
+                                                .primaryText,
                                             width: 1.0,
                                           ),
                                           borderRadius:
@@ -241,6 +238,8 @@ class _SettingWidgetState extends State<SettingWidget> {
                             child: Container(
                               width: MediaQuery.sizeOf(context).width * 0.9,
                               decoration: BoxDecoration(
+                                color: FlutterFlowTheme.of(context)
+                                    .secondaryBackground,
                                 borderRadius: BorderRadius.circular(10.0),
                                 border: Border.all(
                                   color: FlutterFlowTheme.of(context).alternate,
@@ -248,13 +247,13 @@ class _SettingWidgetState extends State<SettingWidget> {
                               ),
                               child: Padding(
                                 padding: const EdgeInsetsDirectional.fromSTEB(
-                                    10.0, 10.0, 10.0, 10.0),
+                                    15.0, 15.0, 15.0, 10.0),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.max,
                                   children: [
                                     Padding(
                                       padding: const EdgeInsetsDirectional.fromSTEB(
-                                          0.0, 0.0, 0.0, 10.0),
+                                          0.0, 0.0, 0.0, 5.0),
                                       child: Row(
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
@@ -332,7 +331,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                                     fontFamily: 'Inter',
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .primary,
+                                                        .primaryText,
                                                     fontSize: 15.0,
                                                     letterSpacing: 0.0,
                                                     fontWeight: FontWeight.bold,
@@ -398,7 +397,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                                     fontFamily: 'Inter',
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .primary,
+                                                        .primaryText,
                                                     fontSize: 15.0,
                                                     letterSpacing: 0.0,
                                                     fontWeight: FontWeight.bold,
@@ -420,7 +419,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                         Expanded(
                                           flex: 2,
                                           child: Text(
-                                            '制限時間設定',
+                                            '制限時間',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
@@ -464,7 +463,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                                     fontFamily: 'Inter',
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .primary,
+                                                        .primaryText,
                                                     fontSize: 15.0,
                                                     letterSpacing: 0.0,
                                                     fontWeight: FontWeight.bold,
@@ -530,7 +529,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                                     fontFamily: 'Inter',
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .primary,
+                                                        .primaryText,
                                                     fontSize: 15.0,
                                                     letterSpacing: 0.0,
                                                     fontWeight: FontWeight.bold,
@@ -552,7 +551,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                         Expanded(
                                           flex: 2,
                                           child: Text(
-                                            'ブックマーク機能',
+                                            'ブックマーク',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
@@ -596,7 +595,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                                     fontFamily: 'Inter',
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .primary,
+                                                        .primaryText,
                                                     fontSize: 15.0,
                                                     letterSpacing: 0.0,
                                                     fontWeight: FontWeight.bold,
@@ -618,7 +617,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                         Expanded(
                                           flex: 2,
                                           child: Text(
-                                            '検索機能',
+                                            '検索',
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
@@ -662,7 +661,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                                     fontFamily: 'Inter',
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .primary,
+                                                        .primaryText,
                                                     fontSize: 15.0,
                                                     letterSpacing: 0.0,
                                                     fontWeight: FontWeight.bold,
@@ -708,7 +707,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                                             borderSide: BorderSide(
                                               color:
                                                   FlutterFlowTheme.of(context)
-                                                      .secondaryText,
+                                                      .primaryText,
                                               width: 1.0,
                                             ),
                                             borderRadius:
@@ -964,6 +963,10 @@ class _SettingWidgetState extends State<SettingWidget> {
                                                         FFAppState()
                                                             .removeAtIndexFromChannelsList(
                                                                 channelListSettingIndex);
+                                                        FFAppState()
+                                                            .nextPageToken = '';
+                                                        FFAppState()
+                                                            .uploadsPlaylistId = '';
                                                         safeSetState(() {});
                                                       },
                                                       child: Icon(
@@ -1077,10 +1080,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                           child: Container(
                             width: MediaQuery.sizeOf(context).width * 0.9,
                             height: 20.0,
-                            decoration: BoxDecoration(
-                              color: FlutterFlowTheme.of(context)
-                                  .secondaryBackground,
-                            ),
+                            decoration: const BoxDecoration(),
                             child: Row(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,

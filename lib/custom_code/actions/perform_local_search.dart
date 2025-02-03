@@ -172,29 +172,43 @@ String _buildIframeHtml(String videoId) {
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    .video-container {
+    /* 1) 外枠：上下に余裕を持たせる (65% > 56.25%)、背景黒 */
+    .outer-container {
       position: relative;
       width: 100%;
-      padding-top: 65%;
-      overflow: hidden;
+      padding-top: 65%;     /* 16:9(約56.25%) より大きめ */
+      background-color: #000;
+      overflow: hidden;     /* はみ出しを隠す */
     }
-    .video-container iframe {
+    /* 2) 内側に16:9のボックスを用意し、中央に配置 */
+    .inner-ratio {
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%); 
+      width: 100%;           /* 親幅に合わせる */
+      padding-top: 56.25%;   /* 16:9 = 9/16 = 56.25% */
+      background: transparent; 
+    }
+    /* 3) iframeを100%にして埋め込む */
+    .inner-ratio iframe {
+      position: absolute;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
       border: 0;
+      display: block;
     }
   </style>
 </head>
-<body style="margin:0;padding:0;overflow:hidden;">
-  <div class="video-container">
-    <iframe
-      src="https://www.youtube.com/embed/$videoId?autoplay=0"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-      allowfullscreen>
-    </iframe>
+<body style="margin:0; padding:0; background:#000;">
+  <div class="outer-container">
+    <div class="inner-ratio">
+      <iframe
+        src="https://www.youtube.com/embed/$videoId?autoplay=0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen>
+      </iframe>
+    </div>
   </div>
 </body>
 </html>

@@ -194,7 +194,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                 borderSide: BorderSide(
                                                   color: FlutterFlowTheme.of(
                                                           context)
-                                                      .alternate,
+                                                      .primaryText,
                                                   width: 1.0,
                                                 ),
                                                 borderRadius:
@@ -241,8 +241,12 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                             ?.clear();
                                                         safeSetState(() {});
                                                       },
-                                                      child: const Icon(
+                                                      child: Icon(
                                                         Icons.clear,
+                                                        color:
+                                                            FlutterFlowTheme.of(
+                                                                    context)
+                                                                .primaryText,
                                                         size: 22,
                                                       ),
                                                     )
@@ -273,11 +277,17 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                         buttonSize: 40.0,
                                         icon: Icon(
                                           Icons.search_sharp,
-                                          color: FlutterFlowTheme.of(context)
-                                              .primaryText,
+                                          color:
+                                              FFAppState().searchActive == true
+                                                  ? FlutterFlowTheme.of(context)
+                                                      .primary
+                                                  : FlutterFlowTheme.of(context)
+                                                      .primaryText,
                                           size: 26.0,
                                         ),
                                         onPressed: () async {
+                                          FFAppState().showBookmarkMode = false;
+                                          safeSetState(() {});
                                           _model.searchResult =
                                               await actions.performLocalSearch(
                                             _model.textController.text,
@@ -317,7 +327,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                               ).toString();
                                               safeSetState(() {});
                                               FFAppState().HTMLForWebView =
-                                                  '<html> <head>   <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">   <style>     .video-container {       position: relative;       width: 100%;       padding-top: 65%;       overflow: hidden;     }     .video-container iframe {       position: absolute;       top: 0; left: 0;       width: 100%; height: 100%;       border: 0;     }   </style> </head> <body style=\"margin:0;padding:0;overflow:hidden;\">   <div class=\"video-container\">     <iframe       src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"       allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"       allowfullscreen>     </iframe>   </div> </body> </html>';
+                                                  '<html><head>  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">  <style>    /* 1) 外枠：上下に余裕を持たせる (65% > 56.25%)、背景黒 */    .outer-container {      position: relative;      width: 100%;      padding-top: 65%;     /* 16:9(約56.25%) より大きめ */      background-color: #000;      overflow: hidden;     /* はみ出しを隠す */    }    /* 2) 内側に16:9のボックスを用意し、中央に配置 */    .inner-ratio {      position: absolute;      top: 50%; left: 50%;      transform: translate(-50%, -50%);       width: 100%;           /* 親幅に合わせる */      padding-top: 56.25%;   /* 16:9 = 9/16 = 56.25% */      background: transparent;     }    /* 3) iframeを100%にして埋め込む */    .inner-ratio iframe {      position: absolute;      top: 0; left: 0;      width: 100%;      height: 100%;      border: 0;      display: block;    }  </style></head><body style=\"margin:0; padding:0; background:#000;\">  <div class=\"outer-container\">    <div class=\"inner-ratio\">      <iframe        src=\"https://www.youtube.com/embed/${FFAppState().selectedVideoId}?autoplay=0\"allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\"allowfullscreen></iframe></div></div></body></html>';
                                               safeSetState(() {});
                                               FFAppState().selectedItem =
                                                   FFAppState()
@@ -364,7 +374,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                         onIcon: Icon(
                                           Icons.bookmark_sharp,
                                           color: FlutterFlowTheme.of(context)
-                                              .primaryText,
+                                              .primary,
                                           size: 26.0,
                                         ),
                                         offIcon: Icon(
@@ -898,14 +908,14 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                     Icons.bookmark,
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .secondaryText,
+                                                        .primary,
                                                     size: 24.0,
                                                   ),
                                                   offIcon: Icon(
                                                     Icons.bookmark_border,
                                                     color: FlutterFlowTheme.of(
                                                             context)
-                                                        .secondaryText,
+                                                        .primaryText,
                                                     size: 24.0,
                                                   ),
                                                 ),
@@ -1187,7 +1197,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                                         Icons
                                                                             .bookmark,
                                                                         color: FlutterFlowTheme.of(context)
-                                                                            .secondaryText,
+                                                                            .primary,
                                                                         size:
                                                                             24.0,
                                                                       ),
@@ -1196,7 +1206,7 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
                                                                         Icons
                                                                             .bookmark_border,
                                                                         color: FlutterFlowTheme.of(context)
-                                                                            .secondaryText,
+                                                                            .primaryText,
                                                                         size:
                                                                             24.0,
                                                                       ),
