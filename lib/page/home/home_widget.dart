@@ -344,8 +344,8 @@ class _HomeWidgetState extends State<HomeWidget> {
                                 ),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(15.0),
-                                  child: Image.asset(
-                                    'assets/images/vdpi8_2.png',
+                                  child: Image.network(
+                                    homeHomeImageRecord!.imagePath,
                                     width: double.infinity,
                                     height: double.infinity,
                                     fit: BoxFit.cover,
